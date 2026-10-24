@@ -1,0 +1,874 @@
+{
+ "brands": [
+  {
+   "slug": "iget",
+   "name": "IGET",
+   "sortOrder": 0
+  },
+  {
+   "slug": "hqd",
+   "name": "HQD",
+   "sortOrder": 1
+  },
+  {
+   "slug": "alibarbar",
+   "name": "Alibarbar",
+   "sortOrder": 2
+  },
+  {
+   "slug": "geek-bar",
+   "name": "Geek Bar",
+   "sortOrder": 3
+  },
+  {
+   "slug": "airmez",
+   "name": "Airmez",
+   "sortOrder": 4
+  },
+  {
+   "slug": "ace",
+   "name": "ACE",
+   "sortOrder": 5
+  },
+  {
+   "slug": "muha-meds",
+   "name": "Muha Meds",
+   "sortOrder": 6
+  },
+  {
+   "slug": "bar-juice",
+   "name": "Bar Juice 5000",
+   "sortOrder": 7
+  },
+  {
+   "slug": "nasty-juice",
+   "name": "Nasty Juice",
+   "sortOrder": 8
+  },
+  {
+   "slug": "vapengin",
+   "name": "Vapengin",
+   "sortOrder": 9
+  },
+  {
+   "slug": "supreme-cbd",
+   "name": "Supreme CBD",
+   "sortOrder": 10
+  },
+  {
+   "slug": "freemax",
+   "name": "Freemax",
+   "sortOrder": 11
+  },
+  {
+   "slug": "smok",
+   "name": "SMOK",
+   "sortOrder": 12
+  },
+  {
+   "slug": "uwell",
+   "name": "Uwell",
+   "sortOrder": 13
+  },
+  {
+   "slug": "geekvape",
+   "name": "GeekVape",
+   "sortOrder": 14
+  },
+  {
+   "slug": "lost-vape",
+   "name": "Lost Vape",
+   "sortOrder": 15
+  },
+  {
+   "slug": "aspire",
+   "name": "Aspire",
+   "sortOrder": 16
+  },
+  {
+   "slug": "voopoo",
+   "name": "Voopoo",
+   "sortOrder": 17
+  },
+  {
+   "slug": "vaporesso",
+   "name": "Vaporesso",
+   "sortOrder": 18
+  },
+  {
+   "slug": "yocan",
+   "name": "Yocan",
+   "sortOrder": 19
+  },
+  {
+   "slug": "utillian",
+   "name": "Utillian",
+   "sortOrder": 20
+  },
+  {
+   "slug": "ryot",
+   "name": "RYOT",
+   "sortOrder": 21
+  },
+  {
+   "slug": "elev8",
+   "name": "Elev8",
+   "sortOrder": 22
+  },
+  {
+   "slug": "fruitbae",
+   "name": "FruitBae",
+   "sortOrder": 23
+  },
+  {
+   "slug": "cloud-nurdz",
+   "name": "Cloud Nurdz",
+   "sortOrder": 24
+  },
+  {
+   "slug": "vital",
+   "name": "Vital",
+   "sortOrder": 25
+  },
+  {
+   "slug": "kapow",
+   "name": "Kapow",
+   "sortOrder": 26
+  },
+  {
+   "slug": "aisu",
+   "name": "Aisu",
+   "sortOrder": 27
+  },
+  {
+   "slug": "dinner-lady",
+   "name": "Dinner Lady",
+   "sortOrder": 28
+  },
+  {
+   "slug": "berry-drop",
+   "name": "Berry Drop",
+   "sortOrder": 29
+  },
+  {
+   "slug": "juiced-up",
+   "name": "Juiced Up",
+   "sortOrder": 30
+  },
+  {
+   "slug": "charlies-chalk-dust",
+   "name": "Charlie's Chalk Dust",
+   "sortOrder": 31
+  },
+  {
+   "slug": "flip-juice",
+   "name": "Flip Juice",
+   "sortOrder": 32
+  },
+  {
+   "slug": "cushty-juice",
+   "name": "Cushty Juice",
+   "sortOrder": 33
+  },
+  {
+   "slug": "crikey-clouds",
+   "name": "Crikey Clouds",
+   "sortOrder": 34
+  },
+  {
+   "slug": "blackwood",
+   "name": "Blackwood",
+   "sortOrder": 35
+  },
+  {
+   "slug": "blvk-unicorn",
+   "name": "BLVK Unicorn",
+   "sortOrder": 36
+  }
+ ],
+ "categories": [
+  {
+   "wooId": 42,
+   "slug": "disposable-vapes",
+   "name": "Disposable Vapes",
+   "kind": "type",
+   "brand": null,
+   "parent": null,
+   "tagline": "Disposables and pod devices from more brands.",
+   "description": "Shop premium disposable vapes at best vape shop Australia with top brands, rich flavors, and smooth draws. Find reliable disposable vape options across Australia with convenient online ordering.",
+   "imageKey": "categories/disposable-vapes-b41467b3cab7.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/4e9108bba6021f79bbd2b653d94f4265-300x300.png.webp",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 100,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 44,
+   "slug": "e-liquids",
+   "name": "E-Liquids",
+   "kind": "type",
+   "brand": null,
+   "parent": null,
+   "tagline": "Freebase and nicotine salt e-liquids.",
+   "description": "Shop premium E-liquids at Best Vape Shop Australia. Explore quality vape juice with smooth flavour options for compatible devices. Find e-liquid online in Australia with product details, fast and reliable delivery, and dependable service.",
+   "imageKey": "categories/e-liquids-fe660a127609.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-11.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 101,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 43,
+   "slug": "eliquide-juice",
+   "name": "E-Juice",
+   "kind": "type",
+   "brand": null,
+   "parent": "e-liquids",
+   "tagline": "More e-liquid brands, including large bottles.",
+   "description": "Shop premium Eliquide juice at Best Vape Shop Australia. Explore quality vape juice with smooth flavour options for compatible devices. Find e-liquid online in Australia with product details, fast and reliable delivery, and dependable service.",
+   "imageKey": "categories/eliquide-juice-96e4123e5f78.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-10.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 102,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 38,
+   "slug": "vape-accessories",
+   "name": "Vape Accessories",
+   "kind": "type",
+   "brand": null,
+   "parent": null,
+   "tagline": "Coils, pods, chargers and kits.",
+   "description": "Buy premium vape accessories at Aussie Vape Mart. Explore coils, pods, chargers, tanks, replacement parts, and essential vaping accessories with fast Australia-wide delivery and competitive prices online.",
+   "imageKey": "categories/vape-accessories-8ed54e00ca13.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-5-e1790113195191.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 103,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 54,
+   "slug": "tanks",
+   "name": "Tanks",
+   "kind": "type",
+   "brand": null,
+   "parent": "vape-accessories",
+   "tagline": "Sub-ohm tanks.",
+   "description": "Explore premium tanks Vape in Australia at Best Vape Shop Australia. Find reliable, high-quality tanks and vaping accessories designed for great flavour, smooth performance, and an easy online shopping experience.",
+   "imageKey": "categories/tanks-336848830485.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-40.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 104,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 49,
+   "slug": "glass-bongs",
+   "name": "Glass Bongs",
+   "kind": "type",
+   "brand": null,
+   "parent": null,
+   "tagline": "Glass pieces and fittings.",
+   "description": "Best vape shop Australia . High-quality glass bongs offer clean hits, seamless filtration, and fashionable design. For fans looking for high-quality water pipe accessories, durable borosilicate glass guarantees long-lasting performance, simple cleaning, and an improved smoking experience. Glass bongs online Australia",
+   "imageKey": "categories/glass-bongs-b8dd2430c51b.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-14.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 105,
+   "needsReview": true,
+   "reviewNotes": [
+    "Legal check: confirm this range can be sold in Australia before showing it."
+   ]
+  },
+  {
+   "wooId": 24,
+   "slug": "iget-bar-australia",
+   "name": "IGET Bar",
+   "kind": "series",
+   "brand": "iget",
+   "parent": null,
+   "tagline": "The original IGET Bar, 3,500 puffs.",
+   "description": "Shop IGET Bar Australia at Best Vape Shop Australia, your trusted Online Vape Shop Australia for authentic IGET Bar disposable vapes, bold flavours and premium vaping products. Explore bestselling IGET Bar flavours, discover the latest arrivals and enjoy smooth performance with fast Australia-wide delivery. Whether you&#8217;re searching for IGET Bar near me or looking to buy IGET Bar online in Australia, you&#8217;ll find genuine IGET products and popular flavours all in one place.\r\nShop IGET Bar today and discover one of Australia&#8217;s favourite disposable vape collections.",
+   "imageKey": "categories/iget-bar-australia-1bd9b21cc741.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-21.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 106,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 34,
+   "slug": "iget-bar-plus",
+   "name": "IGET Bar Plus",
+   "kind": "series",
+   "brand": "iget",
+   "parent": null,
+   "tagline": "IGET's bigger bar, up to 6,000 puffs.",
+   "description": "Shop IGET Bar Plus at Best Vape Shop Australia. Explore the IGET Bar Plus vape with a sleek, rechargeable design, smooth flavour and convenient everyday performance. Find IGET vapes online in Australia with fast and reliable delivery.",
+   "imageKey": "categories/iget-bar-plus-aa587e33047e.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-22.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 107,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 63,
+   "slug": "iget-bar-pro",
+   "name": "IGET Bar Pro",
+   "kind": "series",
+   "brand": "iget",
+   "parent": null,
+   "tagline": "IGET Bar Pro, 10,000 puffs.",
+   "description": "At BEST VAPE SHOP AUSTRALIA, you can shop authentic IGET BAR PRO 10000 products with fast nationwide delivery and trusted customer service from an established Australian online vape store.\r\nBUY VAPES ONLINE .",
+   "imageKey": "categories/iget-bar-pro-9f9f759b2a26.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/IGET-BAR-PRO-10-PACK-2.png",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 108,
+   "needsReview": true,
+   "reviewNotes": [
+    "Image is a styled promo photo from the store; swap for a clean shot if one exists."
+   ]
+  },
+  {
+   "wooId": 27,
+   "slug": "iget-moon",
+   "name": "IGET Moon",
+   "kind": "series",
+   "brand": "iget",
+   "parent": null,
+   "tagline": "IGET Moon, 5,000 puffs.",
+   "description": "Shop IGET Moon Vapes Australia at Best Vape Shop Australia, your trusted Online Vape Shop Australia for premium rechargeable vape devices, bold flavours and quality vaping products. The IGET Moon range is designed for adult vapers seeking smooth flavour delivery, long-lasting performance and a sleek, portable design that&#8217;s ideal for everyday use.",
+   "imageKey": "categories/iget-moon-69ed56e193f0.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-27.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 109,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 28,
+   "slug": "iget-legend",
+   "name": "IGET Legend",
+   "kind": "series",
+   "brand": "iget",
+   "parent": null,
+   "tagline": "IGET Legend, 4,000 puffs.",
+   "description": "Shop IGET Legend vapes at Best Vape Shop Australia. Discover rechargeable IGET Legend devices with smooth flavour, sleek design and reliable everyday convenience. Browse product information and available options online, with fast and reliable delivery.Shop IGET Legend vapes at Best Vape Shop Australia. Discover rechargeable IGET Legend devices with smooth flavour, sleek design and reliable everyday convenience. Browse product information and available options online, with fast and reliable delivery.",
+   "imageKey": "categories/iget-legend-157fc47469d1.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/iget-legend-4000-puffs-300x300-1-1.webp",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 110,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 29,
+   "slug": "iget-xxl",
+   "name": "IGET XXL",
+   "kind": "series",
+   "brand": "iget",
+   "parent": null,
+   "tagline": "Compact IGET XXL, 1,800 puffs.",
+   "description": "Shop IGET XXL vapes at Best Vape Shop Australia. Explore rechargeable IGET XXL devices with smooth flavour, sleek design and convenient everyday performance. Find product details and available options online, supported by fast and reliable delivery.",
+   "imageKey": "categories/iget-xxl-91d7c249add0.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-31.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 111,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 33,
+   "slug": "iget-goat-vape",
+   "name": "IGET Goat",
+   "kind": "series",
+   "brand": "iget",
+   "parent": null,
+   "tagline": "IGET Goat, 5,000 puffs.",
+   "description": "Looking to buy IGET GOAT Vape online in Australia or searching for your favourite flavour, our collection includes a wide range of fruity, icy, mint and candy-inspired options. Every IGET GOAT 5000 is sourced from trusted suppliers, making it easy to shop genuine products with confidence.\r\nAt Best Vape Shop Australia, you&#8217;ll find authentic IGET GOAT 5000 Puffs products, competitive prices and fast Australia-wide delivery, so you can explore one of Australia&#8217;s favourite disposable vape collections with ease.",
+   "imageKey": "categories/iget-goat-vape-bc682c05e296.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-25.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 112,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 36,
+   "slug": "iget-one-12000",
+   "name": "IGET One",
+   "kind": "series",
+   "brand": "iget",
+   "parent": null,
+   "tagline": "IGET One, 12,000 puffs.",
+   "description": "Buy IGET ONE 12000 Puffs online in Australia. We stock the popular Monster series (Blue, Cherry, Tropical Orange) and Chupaa Chups flavors. Genuine 12k puff rechargeable vapes. Fast shipping Australia-wide.\r\nShop now!",
+   "imageKey": "categories/iget-one-12000-041e476e49cd.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-28.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 113,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 31,
+   "slug": "iget-flare-b10000",
+   "name": "IGET Flare",
+   "kind": "series",
+   "brand": "iget",
+   "parent": null,
+   "tagline": "IGET Flare, 10,000 puffs.",
+   "description": "Shop IGET Flare B10000 at Best Vape Shop Australia. Discover a sleek, rechargeable IGET Flare B10000 device with smooth flavour, long-lasting performance and convenient portability. Browse product details and available options online, backed by fast and reliable delivery. Adults 18+ only; use responsibly and comply with Australian regulations.",
+   "imageKey": "categories/iget-flare-b10000-6cf383fb80bc.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-24.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 114,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 30,
+   "slug": "iget-halo-vape-kit",
+   "name": "IGET Halo",
+   "kind": "series",
+   "brand": "iget",
+   "parent": null,
+   "tagline": "IGET Halo kits and pods.",
+   "description": "Shop the IGET Halo Vape Kit at Best Vape Shop Australia. Discover a sleek, rechargeable IGET Halo device with smooth flavour, practical design and reliable everyday convenience. View product details and available options online, with fast and reliable delivery.",
+   "imageKey": "categories/iget-halo-vape-kit-abd6e912e716.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-26.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 115,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 47,
+   "slug": "iget-shion-x1-nicotine-pouch",
+   "name": "IGET Shion X1 Pouches",
+   "kind": "series",
+   "brand": "iget",
+   "parent": null,
+   "tagline": "Nicotine pouches from IGET's Shion range.",
+   "description": "Discover the IGET Shion X1 Nicotine Pouch, a premium nicotine pouch option available at Best Vape Shop Australia. Designed for adult nicotine pouch users, the IGET Shion X1 range combines a discreet pouch format with a selection of popular flavours, making it a convenient addition to the wider IGET Australia collection.",
+   "imageKey": "categories/iget-shion-x1-nicotine-pouch-a8b99fbb457d.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-29.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 116,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 25,
+   "slug": "hqd-cuvie-slick-20000",
+   "name": "HQD Cuvie Slick 20000",
+   "kind": "series",
+   "brand": "hqd",
+   "parent": null,
+   "tagline": "HQD Cuvie Slick, 20,000 puffs.",
+   "description": "Looking for a premium high-capacity rechargeable vape? Shop the HQD Cuvie Slick 20000 at Best Vape Shop Australia and explore our growing range of HQD Vapes Australia, popular flavours and quality vaping products with fast Australia-wide delivery.",
+   "imageKey": "categories/hqd-cuvie-slick-20000-934ad662b205.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-17.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 117,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 26,
+   "slug": "hqd-cuvie-slick-6000",
+   "name": "HQD Cuvie Slick 6000",
+   "kind": "series",
+   "brand": "hqd",
+   "parent": null,
+   "tagline": "The slim HQD Cuvie Slick, 6,000 puffs.",
+   "description": "HQD Cuvie Slick 6000 at Aussie Vape Mart delivers smooth flavour, long-lasting puffs, rechargeable design, and premium performance. Perfect disposable vape for convenience, quality, and satisfying vaping experience every time. Buy HQD Cuvie Slick 6000 Near me Australia.",
+   "imageKey": "categories/hqd-cuvie-slick-6000-11d70fcbe67b.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-16.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 118,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 32,
+   "slug": "hqd-click-plus-30000",
+   "name": "HQD Click Plus",
+   "kind": "series",
+   "brand": "hqd",
+   "parent": null,
+   "tagline": "HQD Click Plus, 30,000 puffs.",
+   "description": "Shop HQD Click Plus 30000 at Best Vape Shop Australia. Explore the HQD Click Plus 30000 vape for a sleek design, smooth flavour and convenient performance. Find HQD vapes online in Australia with fast, reliable delivery.",
+   "imageKey": "categories/hqd-click-plus-30000-cff472f6309b.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-15.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 119,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 35,
+   "slug": "hqd-miracle-8000",
+   "name": "HQD Miracle",
+   "kind": "series",
+   "brand": "hqd",
+   "parent": null,
+   "tagline": "HQD Miracle, 8,000 puffs.",
+   "description": "Buy Top Quality HQD Miracle 8000 in Australia at Best Vapeshop Australia.\r\nIf you are looking for world-class, affordable and portal HQD Miracle 8000 Puffs devices in Australia, browse through our store. We have an extensive collection of HQD Miracle 8000 at attractive prices.\r\n\r\n&nbsp;",
+   "imageKey": "categories/hqd-miracle-8000-d0aedd847173.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-19.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 120,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 46,
+   "slug": "alibarbar",
+   "name": "Alibarbar",
+   "kind": "brand",
+   "brand": "alibarbar",
+   "parent": null,
+   "tagline": "Gold-finish bars with big fruit blends.",
+   "description": "<h2 style=\"text-align: center\"><a href=\"https://bestvapeshopaustralia.com.au/product-category/alibarbar/\">Buy Alibarbar Vapes Australia | Bulk Buy Alibarbar</a></h2>\r\n<p style=\"text-align: center\">Alibarbar is a unique premium gold vape brand and global bulk supplier of high-tech designed vapes. Here you can Bulk buy Alibarbar Vapes Australia cheap with just a few clicks from the comfort of your home.</p>",
+   "imageKey": "categories/alibarbar-1d7e34002d2a.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-2.jpg",
+   "isVisible": true,
+   "isFeatured": true,
+   "sortOrder": 1,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 57,
+   "slug": "alibarbar-pandora",
+   "name": "Alibarbar Pandora",
+   "kind": "series",
+   "brand": "alibarbar",
+   "parent": "alibarbar",
+   "tagline": "Alibarbar Pandora, 7,000 puffs.",
+   "description": "Looking for premium Alibarbar Pandora disposable vapes? Shop the Alibarbar Pandora collection at Best Vape Shop Australia and explore authentic products, bestselling flavours and premium vaping essentials with fast Australia-wide delivery.",
+   "imageKey": "categories/alibarbar-pandora-a1133bf5a069.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-36.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 122,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 61,
+   "slug": "alibarbar-upload-25000-puffs",
+   "name": "Alibarbar Upload",
+   "kind": "series",
+   "brand": "alibarbar",
+   "parent": "alibarbar",
+   "tagline": "Alibarbar Upload, 25,000 puffs.",
+   "description": "Discover the Alibarbar Upload 25000 Puffs collection at Best Vape Shop Australia, your trusted Online Vape Shop Australia for premium disposable vapes, rechargeable vape systems and quality vaping products. Explore a wide selection of authentic Alibarbar Upload 25000 flavours, including Mango Magic, Mint, Blackberry Ice, Blueberry Breeze, Chupa Chups Strawberry, Hubba Hubba Grape and many more popular favourites.",
+   "imageKey": "categories/alibarbar-upload-25000-puffs-2f8ffc2fef6f.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-8-e1790116070330.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 123,
+   "needsReview": true,
+   "reviewNotes": [
+    "Image is a styled promo photo from the store; swap for a clean shot if one exists."
+   ]
+  },
+  {
+   "wooId": 69,
+   "slug": "alibarbar-ingot",
+   "name": "Alibarbar Ingot",
+   "kind": "series",
+   "brand": "alibarbar",
+   "parent": "alibarbar",
+   "tagline": "Pick five Ingot flavours. Best value per bar.",
+   "description": "Explore Alibarbar Ingot 9000 Puffs with a range of flavours and bulk options. Browse Alibarbar Ingot vape products for customers across Australia.\r\nShop Alibarbar Ingot 9000 online in Australia. Build a mixed pack or pick a single flavour — authentic devices, clear pricing, then check out with secure bank transfer. Adults 18+ only.",
+   "imageKey": "categories/alibarbar-ingot-0b90e5a4a50a.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/10/custom-20-pack-BmMqEb_-1.webp",
+   "isVisible": true,
+   "isFeatured": true,
+   "sortOrder": 4,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 45,
+   "slug": "geek-bar",
+   "name": "Geek Bar",
+   "kind": "brand",
+   "brand": "geek-bar",
+   "parent": null,
+   "tagline": "Geek Bar disposables, including the Pulse range.",
+   "description": "Discover Geek Bar disposable vapes at Best vape shop Australia. Enjoy popular flavors, long-lasting performance, and premium quality Geek Bar devices shipped across Australia for a smooth vaping experience. Shop now",
+   "imageKey": "categories/geek-bar-9cda111f7714.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-12.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 125,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 50,
+   "slug": "geek-pulse-9000",
+   "name": "Geek Bar Pulse 9000",
+   "kind": "series",
+   "brand": "geek-bar",
+   "parent": "geek-bar",
+   "tagline": "Geek Bar Pulse, 9,000 puffs.",
+   "description": "Discover the Geek Pulse collection at Best Vape Shop Australia, your trusted Online Vape Shop Australia for premium vape devices, quality vaping products and fast Australia-wide delivery. Explore the latest Geek Pulse Australia range, featuring a growing selection of popular flavours, sleek designs and long-lasting performance for adult vapers seeking a premium vaping experience.",
+   "imageKey": "categories/geek-pulse-9000-7cd2473f236c.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-37-1.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 126,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 59,
+   "slug": "airmez-xbeats-40000-puffs",
+   "name": "Airmez Xbeats",
+   "kind": "series",
+   "brand": "airmez",
+   "parent": null,
+   "tagline": "40,000 puffs with a live screen.",
+   "description": "Buy the Airmez Xbeats 40000 Puffs, a premium Airmez Vape Australia device designed for adult vapers seeking a high-capacity rechargeable disposable vape with long-lasting performance. With a listed capacity of up to 40,000 puffs, this advanced vape combines a sleek ergonomic design with smooth flavour delivery, making it a standout choice for everyday vaping.\r\n\r\nPurchase premium vapes, disposable vapes and quality vaping products at Best Vape Shop Australia—your trusted Online Vape Shop Australia for premium vape devices, disposable vapes, accessories and fast Australia-wide delivery. Whether you&#8217;re exploring the latest Airmez Xbeats 40000 collection or searching for a high-capacity rechargeable vape, this device offers convenience, portability and a premium vaping experience.",
+   "imageKey": "categories/airmez-xbeats-40000-puffs-0feed87420ee.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-7.jpg",
+   "isVisible": true,
+   "isFeatured": true,
+   "sortOrder": 2,
+   "needsReview": true,
+   "reviewNotes": [
+    "Image is a styled promo photo from the store; swap for a clean shot if one exists."
+   ]
+  },
+  {
+   "wooId": 60,
+   "slug": "ace-ultra-premium-vape",
+   "name": "ACE Ultra Premium",
+   "kind": "series",
+   "brand": "ace",
+   "parent": null,
+   "tagline": "Boxed premium devices.",
+   "description": "<h2>Buy ACE Ultra Premium Vape Australia</h2>\r\nExplore the ACE Ultra Premium Australia collection at Best Vape Shop Australia, your trusted Online Vape Shop Australia for premium disposable vapes, vape devices and quality vaping products. Browse a growing range of ACE Ultra Premium Disposable vapes, discover bestselling flavour options and explore one of today&#8217;s most sought-after premium vape brands in Australia.",
+   "imageKey": "categories/ace-ultra-premium-vape-1f651fa6f81e.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-6.jpg",
+   "isVisible": true,
+   "isFeatured": true,
+   "sortOrder": 3,
+   "needsReview": true,
+   "reviewNotes": [
+    "Legal check: confirm this range can be sold in Australia before showing it.",
+    "Image is a styled promo photo from the store; swap for a clean shot if one exists."
+   ]
+  },
+  {
+   "wooId": 52,
+   "slug": "muhameds-disposable",
+   "name": "Muha Meds",
+   "kind": "brand",
+   "brand": "muha-meds",
+   "parent": null,
+   "tagline": "Muha Meds disposables.",
+   "description": "MUHAMEDS Disposable at Best Vape shop Australia delivers bold flavour, smooth hits, and long-lasting performance. Enjoy convenient, ready-to-use vaping with premium quality design, perfect for satisfying everyday disposable vape users. Shop Now.",
+   "imageKey": "categories/muhameds-disposable-3657ea02c135.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-32.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 129,
+   "needsReview": true,
+   "reviewNotes": [
+    "Legal check: confirm this range can be sold in Australia before showing it."
+   ]
+  },
+  {
+   "wooId": 58,
+   "slug": "muhameds-disposable-3500-mg",
+   "name": "Muha Meds 3500 mg",
+   "kind": "series",
+   "brand": "muha-meds",
+   "parent": "muhameds-disposable",
+   "tagline": "The Muha Meds 3,500 mg range.",
+   "description": "Discover the MUHAMEDS DISPOSABLE 3500 MG collection at Best Vape Shop Australia, your trusted Online Vape Shop Australia for premium disposable vape products, quality vape devices and fast Australia-wide delivery. Designed for adult vape users, the Muha Meds range combines a sleek, portable design with smooth flavour delivery, making it a popular choice for those looking to explore premium disposable vape products.",
+   "imageKey": "categories/muhameds-disposable-3500-mg-e38d0476c555.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-33.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 130,
+   "needsReview": true,
+   "reviewNotes": [
+    "Legal check: confirm this range can be sold in Australia before showing it.",
+    "Image is a styled promo photo from the store; swap for a clean shot if one exists."
+   ]
+  },
+  {
+   "wooId": 53,
+   "slug": "supreme-cbd",
+   "name": "Supreme CBD",
+   "kind": "brand",
+   "brand": "supreme-cbd",
+   "parent": null,
+   "tagline": "The Supreme CBD range.",
+   "description": "Supreme CBD Australia is a trusted online destination for premium CBD and vaping accessories. Discover quality products, expert guidance, and a smooth shopping experience from one of the best vape shop Australia destinations.",
+   "imageKey": "categories/supreme-cbd-6a91010346d8.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-38.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 131,
+   "needsReview": true,
+   "reviewNotes": [
+    "Legal check: confirm this range can be sold in Australia before showing it."
+   ]
+  },
+  {
+   "wooId": 41,
+   "slug": "bar-juice-5000-nicotine-salt-e-liquid",
+   "name": "Bar Juice 5000",
+   "kind": "brand",
+   "brand": "bar-juice",
+   "parent": "e-liquids",
+   "tagline": "Nicotine salt e-liquids from Bar Juice 5000.",
+   "description": "<h2>Shop BAR JUICE 5000 Australia</h2>\r\nLooking for premium BAR JUICE 5000 Nicotine Salt E-Liquid? Shop the BAR JUICE 5000 collection at Best Vape Shop Australia and explore authentic nic salt vape juice, popular flavours and premium vaping products with fast Australia-wide delivery.",
+   "imageKey": "categories/bar-juice-5000-nicotine-salt-e-liquid-bd175b70a369.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-9.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 132,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 56,
+   "slug": "nasty-juice",
+   "name": "Nasty Juice",
+   "kind": "brand",
+   "brand": "nasty-juice",
+   "parent": "e-liquids",
+   "tagline": "Nasty Juice e-liquids.",
+   "description": "<h2>Shop Nasty Juice in Australia at Best Vape Shop Australia. Explore popular Nasty Juice vape flavours, vape juice, vape devices, tanks, coils, and vaping accessories from a recognized name in the vaping community.</h2>",
+   "imageKey": "categories/nasty-juice-49007dced3cb.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-35.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 133,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 55,
+   "slug": "vapengin-e-liquid",
+   "name": "Vapengin",
+   "kind": "brand",
+   "brand": "vapengin",
+   "parent": "e-liquids",
+   "tagline": "Vapengin e-liquids.",
+   "description": "VAPENGIN E-liquid Australia offers quality vaping devices, replacement parts, and accessories for vapers seeking reliable performance. Shop VAPENGIN products online at Best Vape Shop Australia for a convenient vaping experience.",
+   "imageKey": "categories/vapengin-e-liquid-d290a19625da.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-39.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 134,
+   "needsReview": true,
+   "reviewNotes": [
+    "Image is a styled promo photo from the store; swap for a clean shot if one exists."
+   ]
+  },
+  {
+   "wooId": 51,
+   "slug": "freemax-coils",
+   "name": "Freemax Coils",
+   "kind": "series",
+   "brand": "freemax",
+   "parent": "vape-accessories",
+   "tagline": "Replacement coils from Freemax.",
+   "description": null,
+   "imageKey": "categories/freemax-coils-6254821eaba3.webp",
+   "imageSourceUrl": null,
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 135,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 23,
+   "slug": "iget-vapes-bulk-buy",
+   "name": "IGET Bulk Buy",
+   "kind": "collection",
+   "brand": "iget",
+   "parent": null,
+   "tagline": "IGET packs, priced by the box.",
+   "description": "<h2 style=\"text-align: center\">IGET Vapes Bulk Buy Australia</h2>\r\nAre you in Australia  and is looking to buy IGet Vapes wholesale. Look no further than Best Vape Shop Australia stocking all IGet vape flavors.",
+   "imageKey": "categories/iget-vapes-bulk-buy-789c004beb73.webp",
+   "imageSourceUrl": "https://bestvapeshopaustralia.com.au/wp-content/uploads/2026/09/images-30.jpg",
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 136,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 64,
+   "slug": "bulk-buy",
+   "name": "Bulk Buy",
+   "kind": "collection",
+   "brand": null,
+   "parent": null,
+   "tagline": "Mixed-brand packs of 10, 20 and 100.",
+   "description": "At best vape shop Australia, we&#8217;re committed to providing reliable vape products, competitive wholesale pricing, and fast Australia-wide delivery for eligible customers. Browse our Bulk Buy Vapes Australia collection today and explore quality disposable vapes and vape devices from trusted brands",
+   "imageKey": "categories/bulk-buy-808634810203.webp",
+   "imageSourceUrl": null,
+   "isVisible": true,
+   "isFeatured": false,
+   "sortOrder": 137,
+   "needsReview": false,
+   "reviewNotes": []
+  },
+  {
+   "wooId": 22,
+   "slug": "uncategorized",
+   "name": "Uncategorized",
+   "kind": "collection",
+   "brand": null,
+   "parent": null,
+   "tagline": null,
+   "description": null,
+   "imageKey": null,
+   "imageSourceUrl": null,
+   "isVisible": false,
+   "isFeatured": false,
+   "sortOrder": 138,
+   "needsReview": false,
+   "reviewNotes": []
+  }
+ ]
+}

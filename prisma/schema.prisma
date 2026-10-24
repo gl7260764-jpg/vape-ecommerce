@@ -1,0 +1,677 @@
+// Storefront catalog on Neon Postgres, modelled on the live WooCommerce store
+// (1,545 simple products, 39 flat categories). Slugs match the live URLs
+// (/product/<slug>/, /product-category/<slug>/) so links and rankings carry over.
+// Images live in the Neon "assets" bucket; rows store the object key and
+// /media/<key> serves the bytes.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ProductStatus {
+  draft
+  active
+  archived
+}
+
+enum StockStatus {
+  in_stock
+  out_of_stock
+  on_backorder
+}
+
+/// What the product is. The live store only implies this through categories;
+/// it decides which specs a product page shows (puffs vs ml and nicotine).
+enum ProductType {
+  disposable
+  e_liquid
+  pod_kit
+  accessory
+  nicotine_pouch
+  cbd
+  glassware
+  bundle
+  other
+}
+
+/// The live store mixes four kinds of category in one flat list.
+enum CategoryKind {
+  type // e-liquids, vape-accessories, glass-bongs
+  brand // geek-bar, alibarbar
+  series // iget-bar-plus, hqd-cuvie-slick-20000
+  collection // bulk-buy, iget-vapes-bulk-buy
+}
+
+enum FlavourFamily {
+  iced
+  fruit
+  dessert
+  tobacco
+  mint
+  drink
+}
+
+model Brand {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  name        String
+  description String?
+  logoKey     String? // object key in the "assets" bucket
+  sortOrder   Int        @default(0)
+  products    Product[]
+  categories  Category[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Category {
+  id              String            @id @default(cuid())
+  wooId           Int?              @unique // term ID on the live store, for re-imports
+  slug            String            @unique
+  name            String
+  kind            CategoryKind      @default(type)
+  tagline         String? // one short line for cards
+  description     String? // long HTML copy from the store
+  imageKey        String? // object key in the "assets" bucket
+  imageSourceUrl  String? // original image on the live store
+  parentId        String?
+  parent          Category?         @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children        Category[]        @relation("CategoryTree")
+  brandId         String?
+  brand           Brand?            @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  isVisible       Boolean           @default(true)
+  isFeatured      Boolean           @default(false) // shown in the homepage "Shop by brand" grid
+  sortOrder       Int               @default(0)
+  metaTitle       String?
+  metaDescription String?
+  needsReview     Boolean           @default(false)
+  reviewNotes     String[]
+  products        ProductCategory[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([parentId])
+  @@index([kind, sortOrder])
+}
+
+model Product {
+  id                String        @id @default(cuid())
+  wooId             Int?          @unique // product ID on the live store, for re-imports
+  slug              String        @unique
+  name              String // display title
+  sourceName        String? // original store title, kept for reference
+  type              ProductType   @default(other)
+  status            ProductStatus @default(active)
+  description       String? // HTML
+  shortDescription  String?
+  /// AUD cents, like WooCommerce's minor-unit prices. On sale when price < regularPrice.
+  priceCents        Int
+  regularPriceCents Int
+  isPurchasable     Boolean       @default(true) // 28 live products are $0 and not purchasable
+  sku               String?       @unique // the live store has none yet
+  stockStatus       StockStatus   @default(in_stock)
+  stockQuantity     Int? // null = stock not tracked (the live store doesn't track it)
+
+  // Specs. The live store has no attributes; these are parsed from names on import.
+  brandId       String?
+  brand         Brand?         @relation(fields: [brandId], references: [id], onDelete: SetNull)
+  flavour       String?
+  flavourFamily FlavourFamily?
+  puffs         Int?
+  volumeMl      Int?
+  nicotineMg    Decimal?       @db.Decimal(7, 2)
+  packSize      Int            @default(1)
+
+  isFeatured      Boolean           @default(false)
+  metaTitle       String?
+  metaDescription String?
+  /// Set when data was researched or inferred rather than taken from the store.
+  needsReview     Boolean           @default(false)
+  reviewNotes     String[]
+  images          ProductImage[]
+  categories      ProductCategory[]
+  orderItems      OrderItem[]
+  publishedAt     DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([status, isFeatured])
+  @@index([type, status])
+  @@index([brandId])
+}
+
+model ProductImage {
+  id            String  @id @default(cuid())
+  productId     String
+  product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  key           String? // object key in the "assets" bucket; null until the file is imported
+  sourceUrl     String? // original image on the live store
+  alt           String  @default("")
+  width         Int?
+  height        Int?
+  /// True when the photo kept its own backdrop (wood, black, artwork) instead of becoming a cutout.
+  /// Those fill the tile edge to edge; cutouts sit padded on the tile.
+  hasBackground Boolean @default(false)
+  position      Int     @default(0) // 0 = main image
+
+  @@index([productId, position])
+}
+
+/// Products can sit in several categories (8 do on the live store).
+model ProductCategory {
+  productId  String
+  categoryId String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  isPrimary  Boolean  @default(false) // drives breadcrumbs and the card's line label
+  position   Int      @default(0) // order within the category listing
+
+  @@id([productId, categoryId])
+  @@index([categoryId, position])
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  source    String? // where they signed up: "footer", "admin"
+  visitorId String? // the browser that signed up, when known
+  visitor   Visitor? @relation(fields: [visitorId], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+
+  @@index([visitorId])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Checkout
+// ---------------------------------------------------------------------------
+
+enum OrderStatus {
+  pending_payment // placed; the team sends payment details
+  paid
+  processing
+  shipped
+  delivered
+  cancelled
+}
+
+/// The customer's preferred way to pay; staff send the matching details after the order is placed.
+enum PaymentMethod {
+  bank_transfer
+  payid
+}
+
+enum AuState {
+  ACT
+  NSW
+  NT
+  QLD
+  SA
+  TAS
+  VIC
+  WA
+}
+
+/// Delivery options shown at checkout. Editable from the admin dashboard (name, price, active, order).
+model ShippingMethod {
+  id          String   @id @default(cuid())
+  code        String   @unique // "express", "standard"
+  name        String
+  description String?
+  priceCents  Int
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id            String        @id @default(cuid())
+  number        Int           @unique @default(autoincrement()) // shown as BV-<number>; sequence starts at 10001
+  publicToken   String        @unique // unguessable token for the customer's confirmation link
+  status        OrderStatus   @default(pending_payment)
+  paymentMethod PaymentMethod
+
+  fullName String
+  email    String
+  phone    String // E.164, e.g. +61412345678
+
+  country      String  @default("AU") // Australia only
+  addressLine1 String
+  addressLine2 String?
+  suburb       String
+  state        AuState
+  postcode     String
+
+  // Shipping is copied onto the order so later price changes don't rewrite history.
+  shippingCode  String
+  shippingName  String
+  shippingCents Int
+
+  subtotalCents       Int
+  // Newsletter discount: the percent the order earned, and what it takes off the items (0 when none).
+  discountPercent     Int                  @default(0)
+  discountCents       Int                  @default(0)
+  discountLabel       String? // "Newsletter + app discount (20%)"; orders before labels read as "Newsletter discount"
+  totalCents          Int
+  notes               String?
+  items               OrderItem[]
+  visitorId           String? // the browser that placed it, for attribution
+  visitor             Visitor?             @relation(fields: [visitorId], references: [id], onDelete: SetNull)
+  customerId          String? // the account for this email, created at checkout
+  customer            Customer?            @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  access              OrderAccess[]
+  chatMessages        ChatMessage[]
+  invoices            Invoice[]
+  statusChanges       OrderStatusChange[]
+  discountRedemptions DiscountRedemption[]
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  @@index([status, createdAt])
+  @@index([email])
+  @@index([visitorId])
+  @@index([customerId])
+}
+
+/// A snapshot of each product at the time of purchase.
+model OrderItem {
+  id             String   @id @default(cuid())
+  orderId        String
+  order          Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId      String?
+  product        Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  wooId          Int?
+  name           String
+  slug           String
+  imageKey       String?
+  unitPriceCents Int
+  quantity       Int
+  lineTotalCents Int
+
+  @@index([orderId])
+}
+
+// ---------------------------------------------------------------------------
+// Admin
+// ---------------------------------------------------------------------------
+
+enum AdminRole {
+  owner // everything, including settings, team and deletes
+  staff // day-to-day catalog and order work, no settings or deletes
+}
+
+/// People who run the store. Customers have no accounts.
+model AdminUser {
+  id                 String              @id @default(cuid())
+  email              String              @unique // stored lowercased
+  name               String
+  passwordHash       String // scrypt, see src/lib/admin/password.ts
+  role               AdminRole           @default(staff)
+  isActive           Boolean             @default(true)
+  lastLoginAt        DateTime?
+  sessions           AdminSession[]
+  chatMessages       ChatMessage[]
+  invoicesSent       Invoice[]
+  orderStatusChanges OrderStatusChange[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+/// One signed-in browser. The cookie holds a random token; only its SHA-256 is stored here.
+model AdminSession {
+  id        String    @id // sha256(token), hex
+  userId    String
+  user      AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  ip        String?
+  userAgent String?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+/// Failed sign-ins, for rate limiting by IP and by email. Old rows are pruned on write.
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  key       String // "ip:<address>" or "email:<address>"
+  createdAt DateTime @default(now())
+
+  @@index([key, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Analytics: first-party visitor tracking from the storefront
+// ---------------------------------------------------------------------------
+
+/// How a visit arrived. Classified from the referrer and UTM tags at write time.
+enum TrafficChannel {
+  direct // typed the address, bookmark, or no referrer
+  organic // search engines: Google, Bing, DuckDuckGo
+  ai // AI assistants: ChatGPT, Perplexity, Gemini, Claude, Copilot
+  social // Facebook, Instagram, TikTok, Reddit, X
+  email // webmail clients or utm_medium=email
+  paid // ad clicks (gclid, utm_medium=cpc)
+  referral // any other website
+}
+
+enum VisitorEventType {
+  page_view
+  add_to_cart
+  remove_from_cart
+  open_cart
+  search
+  begin_checkout
+  place_order // recorded on the server when the order is saved
+  subscribe // recorded on the server when the signup is saved
+  install_app // the store ran as the installed app on this device for the first time
+  enable_notifications // turned on push notifications
+}
+
+/// One browser, identified by a random first-party id (cookie + localStorage "bvsa_vid").
+model Visitor {
+  id                String             @id
+  email             String? // known once they subscribe or place an order
+  identifiedAt      DateTime?
+  firstSeenAt       DateTime           @default(now())
+  lastSeenAt        DateTime           @default(now())
+  sessionCount      Int                @default(0)
+  pageviewCount     Int                @default(0)
+  // First touch: written once, on insert, so attribution never drifts.
+  firstSource       String?
+  firstChannel      TrafficChannel?
+  firstReferrer     String?
+  firstLanding      String?
+  firstUtmSource    String?
+  firstUtmMedium    String?
+  firstUtmCampaign  String?
+  // Latest known context, refreshed at the start of each visit.
+  ip                String?
+  country           String? // ISO 3166-1 alpha-2, e.g. "AU"
+  region            String? // state or province name, e.g. "New South Wales"
+  city              String?
+  device            String? // mobile, tablet, desktop
+  browser           String?
+  os                String?
+  isBot             Boolean            @default(false) // crawler or headless browser user agent
+  isInternal        Boolean            @default(false) // the store team browsing their own site
+  appInstalledAt    DateTime? // first time the store ran as the installed app on this device
+  appPlatform       String? // "iPhone", "Android", "Mac"… at install
+  sessions          VisitorSession[]
+  events            VisitorEvent[]
+  orders            Order[]
+  subscribers       Subscriber[]
+  pushSubscriptions PushSubscription[]
+
+  @@index([lastSeenAt])
+  @@index([firstSeenAt])
+  @@index([email])
+  @@index([country])
+}
+
+/// One visit: a run of activity with no gap longer than 30 minutes ("bvsa_sid").
+model VisitorSession {
+  id           String         @id
+  visitorId    String
+  visitor      Visitor        @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  startedAt    DateTime       @default(now())
+  lastSeenAt   DateTime       @default(now())
+  landingPath  String
+  exitPath     String?
+  referrer     String?
+  referrerHost String?
+  source       String // "Google", "ChatGPT", "Direct", "example.com"
+  channel      TrafficChannel
+  utmSource    String?
+  utmMedium    String?
+  utmCampaign  String?
+  ip           String?
+  country      String?
+  region       String?
+  city         String?
+  device       String?
+  browser      String?
+  os           String?
+  pageviews    Int            @default(0)
+  eventCount   Int            @default(0)
+  events       VisitorEvent[]
+
+  @@index([startedAt])
+  @@index([lastSeenAt])
+  @@index([visitorId, startedAt])
+}
+
+/// What a visitor did. Labels and values are copied in so history survives renames and price changes.
+model VisitorEvent {
+  id        String           @id @default(cuid())
+  visitorId String
+  visitor   Visitor          @relation(fields: [visitorId], references: [id], onDelete: Cascade)
+  sessionId String
+  session   VisitorSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  type      VisitorEventType
+  path      String
+  title     String? // page title at the time
+  label     String? // product name, search words, order number
+  value     Int? // cents, for cart and order events
+  createdAt DateTime         @default(now())
+
+  @@index([sessionId, createdAt])
+  @@index([visitorId, createdAt])
+  @@index([type, createdAt])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// Customer accounts: created automatically at checkout, no password
+// ---------------------------------------------------------------------------
+
+/// One account per email, made when they place their first order. Details follow their latest order.
+model Customer {
+  id             String             @id @default(cuid())
+  email          String             @unique // lowercased
+  name           String? // from their latest order; empty for an account opened by email
+  phone          String? // E.164, from their latest order
+  appInstalledAt DateTime? // a device signed into this account installed the app (the app's 10%)
+  orders         Order[]
+  chats          ChatConversation[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+}
+
+/// Which orders a browser may show under "My orders": the ones it placed (full details), plus
+/// any found there by email (a summary only: no street address, phone or order link, because
+/// an email is not proof of who is typing it).
+model OrderAccess {
+  tokenHash   String // sha256 of the "bvsa_orders" cookie
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  fullDetails Boolean  @default(true) // false when the order was found by email on another device
+  createdAt   DateTime @default(now())
+
+  @@id([tokenHash, orderId])
+  @@index([orderId])
+}
+
+// ---------------------------------------------------------------------------
+// Customer chat: one conversation per ordering device, answered from the admin
+// ---------------------------------------------------------------------------
+
+enum ChatSender {
+  customer
+  staff
+  system // order cards
+}
+
+/// One conversation per customer device (the "bvsa_orders" cookie), so an email typed at
+/// checkout never opens someone else's chat.
+model ChatConversation {
+  id                  String        @id @default(cuid())
+  deviceTokenHash     String        @unique // sha256 of the device cookie
+  customerId          String?
+  customer            Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerName        String // from the latest order
+  customerEmail       String
+  lastMessageAt       DateTime      @default(now())
+  lastMessagePreview  String        @default("")
+  staffUnreadCount    Int           @default(0)
+  customerUnreadCount Int           @default(0)
+  customerLastSeenAt  DateTime?
+  lastPushAt          DateTime? // the last chat notification sent to this device (at most one a minute)
+  messages            ChatMessage[]
+  createdAt           DateTime      @default(now())
+
+  @@index([lastMessageAt])
+  @@index([customerId])
+}
+
+model ChatMessage {
+  id               String           @id // uuid made in the browser, so optimistic bubbles match stored ones
+  conversationId   String
+  conversation     ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender           ChatSender
+  staffId          String?
+  staff            AdminUser?       @relation(fields: [staffId], references: [id], onDelete: SetNull)
+  body             String           @default("")
+  attachmentKey    String?
+  attachmentName   String?
+  attachmentMime   String?
+  attachmentSize   Int?
+  attachmentWidth  Int?
+  attachmentHeight Int?
+  replyToId        String?
+  replyTo          ChatMessage?     @relation("ChatReplies", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies          ChatMessage[]    @relation("ChatReplies")
+  orderId          String?
+  order            Order?           @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  invoiceId        String? // an invoice (sender system) or the "is everything correct?" question (sender staff)
+  invoice          Invoice?         @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  reactions        ChatReaction[]
+  editedAt         DateTime?
+  deletedAt        DateTime?
+  deletedBy        String? // "customer" or "staff:<adminId>"
+  deliveredAt      DateTime?
+  readAt           DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt // drives sync: clients ask for what changed since
+
+  @@index([conversationId, createdAt])
+  @@index([conversationId, updatedAt])
+  @@index([invoiceId])
+}
+
+model ChatReaction {
+  messageId String
+  message   ChatMessage @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  by        String // "customer" or "staff": one reaction per side
+  emoji     String
+  createdAt DateTime    @default(now())
+
+  @@id([messageId, by])
+}
+
+/// Heartbeats for "online" and "last seen": "customer:<conversationId>" or "staff:<adminId>".
+model ChatPresence {
+  id         String   @id
+  lastSeenAt DateTime
+}
+
+// ---------------------------------------------------------------------------
+// Invoices: a frozen copy of what each invoice showed, sent into the order's chat
+// ---------------------------------------------------------------------------
+
+enum InvoiceAnswer {
+  confirmed // "Yes, all correct"
+  disputed // "Something's wrong"
+}
+
+/// One invoice version for an order. `snapshot` holds everything the invoice shows (InvoiceSnapshot);
+/// only the status badge is worked out live from the order.
+model Invoice {
+  id         String         @id @default(cuid())
+  orderId    String
+  order      Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  version    Int
+  number     String         @unique // INV-10053, INV-10053-2
+  snapshot   Json
+  askConfirm Boolean // the customer is asked to confirm (only while the order awaits payment)
+  answer     InvoiceAnswer?
+  answeredAt DateTime?
+  sentById   String? // null: sent automatically when the order was placed
+  sentBy     AdminUser?     @relation(fields: [sentById], references: [id], onDelete: SetNull)
+  messages   ChatMessage[]
+  createdAt  DateTime       @default(now())
+
+  @@unique([orderId, version])
+}
+
+/// Who changed an order's status, and when (the admin order timeline).
+model OrderStatusChange {
+  id        String      @id @default(cuid())
+  orderId   String
+  order     Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  from      OrderStatus
+  to        OrderStatus
+  adminId   String?
+  admin     AdminUser?  @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  createdAt DateTime    @default(now())
+
+  @@index([orderId])
+}
+
+/// The store's own details for the invoice header. One row, id "store". Empty until the owner fills it in.
+model StoreProfile {
+  id        String   @id @default("store")
+  email     String?
+  phone     String? // E.164
+  address   String? // multi-line
+  abn       String? // 11 digits, no spaces
+  updatedAt DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Newsletter pop-up and the subscriber discount
+// ---------------------------------------------------------------------------
+
+/// How the newsletter pop-up behaves. One row, id "newsletter"; defaults apply until the owner saves.
+model NewsletterSettings {
+  id                   String   @id @default("newsletter")
+  popupEnabled         Boolean  @default(true)
+  firstDelaySeconds    Int      @default(8)
+  repeatEverySeconds   Int      @default(10)
+  maxShows             Int? // null: keep showing until they subscribe
+  installOffersEnabled Boolean  @default(true) // the app install card, navbar icon and pop-up
+  updatedAt            DateTime @updatedAt
+}
+
+/// A device's notification subscription (web push). It belongs to the device (its cookie), so chat
+/// replies reach that chat's device and order updates the device that placed the order.
+model PushSubscription {
+  id              String   @id @default(cuid())
+  endpoint        String   @unique
+  p256dh          String
+  auth            String
+  deviceTokenHash String
+  visitorId       String?
+  visitor         Visitor? @relation(fields: [visitorId], references: [id], onDelete: SetNull)
+  platform        String?
+  createdAt       DateTime @default(now())
+
+  @@index([deviceTokenHash])
+  @@index([visitorId])
+}
+
+/// An email that has used its 10%. Kept apart from Subscriber so unsubscribing and signing up again
+/// never gives a second discount. The email is the key, so two orders can't both claim it.
+model DiscountRedemption {
+  email     String   @id // lowercased
+  orderId   String?
+  order     Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  percent   Int
+  createdAt DateTime @default(now())
+}

@@ -1,0 +1,12 @@
+{
+  "_meta": { "pricesConfirmedOn": "2026-10-22" },
+  "853": { "name": "IGET Bar Plus 6000 Puffs × 10 (Mixed Flavours)", "packSize": 10, "source": "package contents in the store's own description (10 devices, mixed flavours)" },
+  "4985": { "priceCents": 84900, "regularPriceCents": 149900, "source": "same pack is listed on the store as \"20 PACK – ALIBARBAR INGOT – 9000 PUFFS\" (5073) at $849" },
+  "4097": { "priceCents": 699, "regularPriceCents": 1450, "source": "same pipe is listed on the store again (4168) at $6.99" },
+  "2060": { "priceCents": 5400, "regularPriceCents": 5900, "source": "matched to the store's Uwell Caliburn X device ($54, was $59)", "note": "estimate; no AUD listing found online" },
+  "2298": { "priceCents": 3900, "regularPriceCents": 5900, "source": "matched to the store's Honest Torch ($39, was $59)", "note": "estimate; no AUD listing found online" },
+  "1672": { "priceCents": 4500, "regularPriceCents": 5600, "source": "matched to the store's 18mm Bent MP Bubbler ($45, was $56)" },
+  "2343": { "priceCents": 5300, "regularPriceCents": 7400, "source": "matched to the store's Dynavap accessories in the same class (Titanium Tip, $53)", "note": "estimate; no AUD listing found online" },
+  "1720": { "priceCents": 12500, "regularPriceCents": 15000, "source": "half the store's IGET Bar Plus Pod Box (10 pcs) at $249.99", "note": "estimate" },
+  "5019": { "priceCents": 24950, "regularPriceCents": 29900, "source": "5 x the per-bar price of the store's IGET One 12000 10-pack ($49.90 a bar)", "note": "estimate; Govot Zero has no other listing on the store or online" }
+}
