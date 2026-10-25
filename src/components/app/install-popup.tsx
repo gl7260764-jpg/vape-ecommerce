@@ -18,7 +18,7 @@ export function InstallPopup({ open, onOpenChange, discount, onInstall }: { open
   useLenisLock(open);
   const ticks = [
     ...(discount ? ["20% off your next order (10% + 10%)"] : []),
-    "Notifications when we reply or your order ships",
+    "Notifications for replies, orders and new products",
     "One tap from your home screen",
   ];
   return (

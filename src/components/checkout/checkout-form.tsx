@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { BankIcon, CaretDownIcon, CheckIcon, LightningIcon, LockSimpleIcon, ShoppingBagOpenIcon, TruckIcon, WarningCircleIcon } from "@phosphor-icons/react";
-import { placeOrder, quoteCart, type Quote } from "@/app/actions/checkout";
+import { placeOrder, quoteCart, savedDetails, type Quote } from "@/app/actions/checkout";
 import {
   AU_STATES,
   formatAuPhone,
@@ -249,6 +249,33 @@ export function CheckoutForm({ shippingMethods }: { shippingMethods: ShippingOpt
     notes: "",
   });
 
+  // A returning customer: their details from the last order placed on this device (just the email on a
+  // device that only typed it). Only fills an untouched form.
+  const [filledFromOrder, setFilledFromOrder] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    savedDetails()
+      .then((saved) => {
+        if (cancelled || !saved) return;
+        setValues((v) => {
+          const untouched = !v.fullName && !v.email && !v.phone && !v.addressLine1 && !v.addressLine2 && !v.suburb && !v.state && !v.postcode;
+          if (!untouched) return v;
+          const { fromOrder, ...details } = saved;
+          if (fromOrder) setFilledFromOrder(true);
+          return { ...v, ...details };
+        });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  const clearSaved = () => {
+    setValues((v) => ({ ...v, fullName: "", email: "", phone: "", addressLine1: "", addressLine2: "", suburb: "", state: "", postcode: "" }));
+    setFilledFromOrder(false);
+    setErrors({});
+  };
+
   const cartKey = useMemo(() => lines.map((l) => `${l.product.id}:${l.quantity}`).join(","), [lines]);
   const cartLines = useMemo(() => lines.map((l) => ({ id: l.product.id, quantity: l.quantity })), [lines]);
 
@@ -383,6 +410,15 @@ export function CheckoutForm({ shippingMethods }: { shippingMethods: ShippingOpt
 
       <div className="flex flex-col gap-6 lg:col-span-7">
         <Section title="Contact">
+          {filledFromOrder && (
+            <p className="-mt-2 mb-5 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+              <CheckIcon weight="bold" className="size-4 text-primary-ink" aria-hidden />
+              Filled in from your last order.
+              <button type="button" onClick={clearSaved} className="font-medium text-foreground underline-offset-4 hover:underline">
+                Clear
+              </button>
+            </p>
+          )}
           <div className="grid gap-5 sm:grid-cols-2">
             <Field id="fullName" label="Full name" error={errors.fullName} className="sm:col-span-2">
               <input

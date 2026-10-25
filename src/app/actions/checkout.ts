@@ -6,7 +6,8 @@ import { prisma } from "@/lib/db";
 import { normaliseAuPhone, orderNumber, validateCheckout, type CartLineInput, type CheckoutFormValues, type FieldErrors } from "@/lib/checkout";
 import { priceLines, type PricedLine } from "@/lib/checkout-queries";
 import { currentVisit, existingVisitorId, recordServerEvent } from "@/lib/analytics/record";
-import { grantOrderAccess } from "@/lib/customer-orders";
+import { savedCheckoutDetails, type SavedCheckoutDetails } from "@/lib/checkout-details";
+import { currentDeviceTokenHash, grantOrderAccess } from "@/lib/customer-orders";
 import { openOrderConversation } from "@/lib/chat/service";
 import { discountCents } from "@/lib/discount";
 import { claimDiscount, welcomeDiscountFor } from "@/lib/newsletter";
@@ -14,6 +15,17 @@ import { claimDiscount, welcomeDiscountFor } from "@/lib/newsletter";
 export type Quote = { items: PricedLine[]; unavailable: string[]; subtotalCents: number; discount: { percent: number; cents: number; label: string } | null };
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/**
+ * A returning customer's details for the checkout: from the last order placed on this device, or just
+ * the email of the account it's signed into (never another device's address or phone).
+ */
+export async function savedDetails(): Promise<SavedCheckoutDetails | null> {
+  return savedCheckoutDetails(await currentDeviceTokenHash()).catch((error) => {
+    console.error("saved checkout details failed", error);
+    return null;
+  });
+}
 
 /** The browser placing the order, for the app's 10% (installed on this device). */
 const thisVisitor = async () => (await currentVisit().catch(() => null))?.visitorId ?? null;

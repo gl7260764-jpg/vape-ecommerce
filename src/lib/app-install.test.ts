@@ -57,9 +57,9 @@ test("offers know when the welcome discount is used", async () => {
   const email = mail("used");
   await openAccount(dev("used"), email);
   await prisma.discountRedemption.create({ data: { email, percent: 10 } });
-  assert.deepEqual(await appOffersFor(dev("used")), { welcomeUsed: true, signedIn: true });
-  assert.deepEqual(await appOffersFor(dev("nobody")), { welcomeUsed: false, signedIn: false });
-  assert.deepEqual(await appOffersFor(null), { welcomeUsed: false, signedIn: false });
+  assert.deepEqual(await appOffersFor(dev("used"), null), { welcomeUsed: true, signedIn: true, installed: false });
+  assert.deepEqual(await appOffersFor(dev("nobody"), null), { welcomeUsed: false, signedIn: false, installed: false });
+  assert.deepEqual(await appOffersFor(null, null), { welcomeUsed: false, signedIn: false, installed: false });
 });
 
 test("an install that arrives before the visitor exists is not counted as recorded", async () => {
@@ -68,4 +68,19 @@ test("an install that arrives before the visitor exists is not counted as record
   const visitorId = await visitor("not-yet");
   assert.equal(await recordAppInstall({ visitorId, tokenHash: null, platform: "Android" }), true);
   assert.equal(await recordAppInstall({ visitorId, tokenHash: null, platform: "Android" }), true, "already recorded counts as recorded");
+});
+
+test("an install with no visitor cookie yet is not counted as recorded", async () => {
+  // The app's very first page: the analytics cookie is written a moment after the page mounts.
+  assert.equal(await recordAppInstall({ visitorId: null, tokenHash: null, platform: "iPhone" }), false);
+});
+
+test("offers stop once the app is installed, on this browser or by the account", async () => {
+  const email = mail("installed");
+  await openAccount(dev("installed"), email);
+  assert.equal((await appOffersFor(dev("installed"), null)).installed, false);
+  await prisma.customer.update({ where: { email }, data: { appInstalledAt: new Date() } });
+  assert.equal((await appOffersFor(dev("installed"), null)).installed, true, "the account installed it on another device");
+  const visitorId = await visitor("browser", { appInstalledAt: new Date() });
+  assert.equal((await appOffersFor(null, visitorId)).installed, true, "this browser installed it (Android and desktop share the browser's cookies)");
 });

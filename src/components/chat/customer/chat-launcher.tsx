@@ -1,14 +1,30 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { ChatCircleDotsIcon } from "@phosphor-icons/react";
 import { useChatUi } from "@/components/chat/chat-ui-store";
+import { ChatWindow } from "@/components/chat/customer/chat-window";
 import { getPusher, listen, peekPusher, pusherConfigured } from "@/components/chat/pusher-client";
-import { Sheet, SheetContent, SheetDescription, SheetTitle } from "@/components/ui/sheet";
+import { AGE_CONFIRMED_EVENT, AGE_STORAGE_KEY } from "@/components/site/age-gate";
 import { useLenisLock } from "@/hooks/use-lenis-lock";
 import { channels, EVENTS } from "@/lib/chat/channels";
+import { cn } from "@/lib/utils";
 
-type Status = { hasConversation: boolean; unread: number; conversationId: string | null };
+type Status = { hasConversation: boolean; unread: number; conversationId: string | null; email: string | null };
+
+// Once someone has opened the chat on this device, the button stops pulsing.
+const SEEN_KEY = "bvsa-chat-seen";
+const readFlag = (key: string) => {
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+};
+
+// The first-time form downloads when the window opens on a device with no chat yet.
+const StartChat = dynamic(() => import("@/components/chat/customer/start-chat").then((m) => m.StartChat), { ssr: false });
 
 // The panel (bubbles, composer, emoji picker) downloads on first open, never for visitors without a chat.
 const ChatPanel = dynamic(() => import("@/components/chat/customer/chat-panel").then((m) => m.ChatPanel), {
@@ -41,8 +57,9 @@ const beat = (state: "beat" | "leave") => {
 };
 
 /**
- * The chat on every store page for a device signed into an account: keeps the unread count for the
- * navbar's message icon, opens the chat panel, and tells the team this customer is online.
+ * The live chat on every store page: a floating button for every visitor (after the 18+ check). Its
+ * window starts a chat with an email and a first message, or shows this device's conversation. It
+ * also keeps the unread count for the navbar's message icon and tells the team the customer is online.
  */
 export function ChatLauncher() {
   const { open, setOpen, pendingOpen, lingering, statusVersion, setStatus: publish } = useChatUi();
@@ -50,7 +67,28 @@ export function ChatLauncher() {
   const has = Boolean(status?.hasConversation && status.conversationId);
   // Asked to open (the order page) before the chat existed: open as soon as it does.
   const shown = open || (pendingOpen && has);
-  useLenisLock(shown);
+  const [ageOk, setAgeOk] = useState(false);
+  const [seen, setSeen] = useState(true);
+  const [phone, setPhone] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  // On phones the window is the whole screen, so the page behind stops scrolling; on computers it keeps working.
+  useLenisLock(shown && phone);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- storage and media queries are only readable after mount
+    setAgeOk(readFlag(AGE_STORAGE_KEY) === "yes");
+    setSeen(readFlag(SEEN_KEY) === "yes");
+    const media = window.matchMedia("(max-width: 639px)");
+    setPhone(media.matches);
+    const onMedia = () => setPhone(media.matches);
+    const onAge = () => setAgeOk(true);
+    media.addEventListener("change", onMedia);
+    window.addEventListener(AGE_CONFIRMED_EVENT, onAge);
+    return () => {
+      media.removeEventListener("change", onMedia);
+      window.removeEventListener(AGE_CONFIRMED_EVENT, onAge);
+    };
+  }, []);
 
   const refresh = useCallback(async () => {
     const next = await fetchStatus();
@@ -129,6 +167,14 @@ export function ChatLauncher() {
 
   const onOpenChange = (next: boolean) => {
     setOpen(next);
+    if (next && !seen) {
+      setSeen(true);
+      try {
+        window.localStorage.setItem(SEEN_KEY, "yes");
+      } catch {
+        // storage blocked: it pulses again next visit
+      }
+    }
     if (!next) void refresh();
   };
 
@@ -136,20 +182,39 @@ export function ChatLauncher() {
   // The navbar's message icon shows these.
   useEffect(() => publish({ signedIn: has, unread }), [has, unread, publish]);
 
-  if (!has) return null;
+  if (!ageOk && !shown) return null;
 
   return (
     <>
-      <Sheet open={shown} onOpenChange={onOpenChange}>
-        <SheetContent
-          side="right"
-          className="w-full gap-0 border-border bg-background p-0 data-[side=right]:w-full data-[side=right]:sm:max-w-md"
-        >
-          <SheetTitle className="sr-only">Chat with us</SheetTitle>
-          <SheetDescription className="sr-only">Messages with the Best Vape Shop team about your order.</SheetDescription>
-          {shown && status?.conversationId && <ChatPanel conversationId={status.conversationId} live={pusherConfigured} />}
-        </SheetContent>
-      </Sheet>
+      <button
+        ref={buttonRef}
+        type="button"
+        onClick={() => onOpenChange(!shown)}
+        aria-label={unread ? `Chat with us, ${unread} unread` : "Chat with us"}
+        aria-expanded={shown}
+        className={cn(
+          "fixed right-4 bottom-4 z-[var(--z-header)] grid size-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_12px_40px_-12px_var(--shadow-strong)] transition-[transform,bottom] duration-300 hover:scale-105 active:scale-95 sm:right-6 sm:bottom-6",
+          // Above the product page's sticky buy bar, and on phones above a card at the bottom (install, notifications).
+          "[body:has([data-sticky-bar=shown])_&]:bottom-24 lg:[body:has([data-sticky-bar=shown])_&]:bottom-6",
+          "max-sm:[body:has([data-bottom-card])_&]:bottom-36 max-sm:[body:has([data-sticky-bar=shown]):has([data-bottom-card])_&]:bottom-56"
+        )}
+      >
+        {!seen && <span aria-hidden className="absolute inset-0 rounded-full bg-primary/50 motion-safe:animate-ping" />}
+        <ChatCircleDotsIcon weight="fill" className="relative size-7" aria-hidden />
+        {unread > 0 && (
+          <span className="absolute -top-1 -right-1 grid h-6 min-w-6 place-items-center rounded-full bg-foreground px-1.5 text-xs font-semibold text-background ring-2 ring-background">
+            {unread > 99 ? "99+" : unread}
+          </span>
+        )}
+      </button>
+
+      <ChatWindow open={shown} onOpenChange={onOpenChange} modal={phone} returnFocusTo={buttonRef}>
+        {shown && has && status?.conversationId ? (
+          <ChatPanel conversationId={status.conversationId} email={status.email} live={pusherConfigured} />
+        ) : shown && !pendingOpen ? (
+          <StartChat onStarted={() => void refresh()} />
+        ) : null}
+      </ChatWindow>
     </>
   );
 }

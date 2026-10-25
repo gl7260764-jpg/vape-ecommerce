@@ -3,9 +3,9 @@
 const KEY = "bvsa-install";
 const CARD_KEY = "bvsa-install-card";
 
-export type InstallDeviceState = { shows: number; lastClosedAt: number | null; recorded: boolean; signInAsked: boolean };
+export type InstallDeviceState = { shows: number; lastClosedAt: number | null; recorded: boolean; signInAsked: boolean; notifyAsked: boolean };
 
-let memory: InstallDeviceState = { shows: 0, lastClosedAt: null, recorded: false, signInAsked: false };
+let memory: InstallDeviceState = { shows: 0, lastClosedAt: null, recorded: false, signInAsked: false, notifyAsked: false };
 
 export function readInstallDevice(): InstallDeviceState {
   try {
@@ -17,6 +17,7 @@ export function readInstallDevice(): InstallDeviceState {
       lastClosedAt: Number.isFinite(v?.lastClosedAt) ? v.lastClosedAt : null,
       recorded: v?.recorded === true,
       signInAsked: v?.signInAsked === true,
+      notifyAsked: v?.notifyAsked === true,
     };
   } catch {
     return memory;

@@ -10,18 +10,21 @@ async function accountCustomerId(tokenHash: string): Promise<string | null> {
   return c?.customerId ?? null;
 }
 
-async function markCustomer(customerId: string | null) {
-  if (customerId) await prisma.customer.updateMany({ where: { id: customerId, appInstalledAt: null }, data: { appInstalledAt: new Date() } });
+/** Marks the account installed (first time only); false when there's no account to mark. */
+async function markCustomer(customerId: string | null): Promise<boolean> {
+  if (!customerId) return false;
+  await prisma.customer.updateMany({ where: { id: customerId, appInstalledAt: null }, data: { appInstalledAt: new Date() } });
+  return true;
 }
 
 /**
  * The store ran as the installed app on this device: mark the visitor (first time only) and its account.
- * False when the visitor isn't stored yet (the app's first page view can arrive after this), so the
- * device tries again; true once it's recorded, or when tracking is off and there's no visitor to mark.
+ * False while there's no stored visitor yet (the app's very first page writes its analytics cookie a
+ * moment after it mounts, and stores the visit after that), so the device tries again.
  */
 export async function recordAppInstall(input: { visitorId: string | null; tokenHash: string | null; platform: string }): Promise<boolean> {
-  if (input.tokenHash) await markCustomer(await accountCustomerId(input.tokenHash));
-  if (!input.visitorId) return true;
+  const accountMarked = input.tokenHash ? await markCustomer(await accountCustomerId(input.tokenHash)) : false;
+  if (!input.visitorId) return accountMarked;
   const { count } = await prisma.visitor.updateMany({
     where: { id: input.visitorId, appInstalledAt: null },
     data: { appInstalledAt: new Date(), appPlatform: input.platform.slice(0, 40) },
@@ -48,11 +51,15 @@ export async function isInstalled(input: { visitorId: string | null; email: stri
   return Boolean(visitor?.appInstalledAt || customer?.appInstalledAt);
 }
 
-/** What the install offers may promise this device: no discount once its account's welcome discount is used. */
-export async function appOffersFor(tokenHash: string | null): Promise<{ welcomeUsed: boolean; signedIn: boolean }> {
-  if (!tokenHash) return { welcomeUsed: false, signedIn: false };
-  const c = await prisma.chatConversation.findUnique({ where: { deviceTokenHash: tokenHash }, select: { customerEmail: true } });
-  if (!c) return { welcomeUsed: false, signedIn: false };
-  const used = await prisma.discountRedemption.findUnique({ where: { email: c.customerEmail }, select: { email: true } });
-  return { welcomeUsed: Boolean(used), signedIn: true };
+/**
+ * What the install offers may say on this device: no discount once its account's welcome discount is
+ * used, and no offers at all once the app is installed (by this browser, or by the account elsewhere).
+ */
+export async function appOffersFor(tokenHash: string | null, visitorId: string | null): Promise<{ welcomeUsed: boolean; signedIn: boolean; installed: boolean }> {
+  const [account, visitor] = await Promise.all([
+    tokenHash ? prisma.chatConversation.findUnique({ where: { deviceTokenHash: tokenHash }, select: { customerEmail: true, customer: { select: { appInstalledAt: true } } } }) : null,
+    visitorId ? prisma.visitor.findUnique({ where: { id: visitorId }, select: { appInstalledAt: true } }) : null,
+  ]);
+  const used = account ? await prisma.discountRedemption.findUnique({ where: { email: account.customerEmail }, select: { email: true } }) : null;
+  return { welcomeUsed: Boolean(used), signedIn: Boolean(account), installed: Boolean(visitor?.appInstalledAt || account?.customer?.appInstalledAt) };
 }

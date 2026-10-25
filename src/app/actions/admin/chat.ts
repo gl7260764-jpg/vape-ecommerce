@@ -1,11 +1,13 @@
 "use server";
 
+import { after } from "next/server";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin/auth";
 import { fail, ok, toActionError, type ActionResult } from "@/lib/admin/result";
 import { ChatError, chatErrorMessage, deleteMessage, editMessage, markReceipts, react, sendMessage } from "@/lib/chat/service";
 import { staffActorFor, type StaffActor } from "@/lib/chat/staff";
 import type { ChatMessageDTO } from "@/lib/chat/types";
+import { notifyChat } from "@/lib/push";
 
 // The team's side of the chat. Every action checks the session first; the chat service then checks
 // the message rules (own messages only, except that the owner can remove anyone's).
@@ -39,10 +41,13 @@ const sendInput = z.object({
 });
 
 export async function sendStaffMessage(input: z.input<typeof sendInput>): Promise<ActionResult<ChatMessageDTO>> {
-  return asStaff((actor) => {
+  return asStaff(async (actor) => {
     const parsed = sendInput.safeParse(input);
     if (!parsed.success) throw new ChatError("INVALID");
-    return sendMessage(actor, parsed.data);
+    const message = await sendMessage(actor, parsed.data);
+    // A customer who isn't on the site gets a notification (if they turned them on).
+    after(() => notifyChat(parsed.data.conversationId).catch((error) => console.error("chat notification failed", error)));
+    return message;
   });
 }
 

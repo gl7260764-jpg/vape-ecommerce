@@ -239,3 +239,23 @@ Permissions: `catalog:write`, `catalog:delete`, `orders:write`, `settings:write`
     - A new device gets its own empty chat and order summaries only; messages, invoices and full order details stay on the device that made them.
     - The navbar's account icon goes to `/account` (`/orders` redirects there); the message icon shows the team's unread messages and replaced the floating chat bubble.
     - Admin › Chats tags chats from devices that haven't ordered ("Subscriber" / "New account") with a note that the email isn't proven.
+- [x] P20 (adapted) Install the app, notifications and the app discount: built 2026-10-24.
+  - Files: `src/app/manifest.ts`, `public/sw.js`, `public/offline.html`, `public/icons/*`, `src/app/apple-icon.png`, `scripts/app/icons.mjs`, `src/instrumentation-client.ts`, `src/components/app/*`, `src/lib/{app-install,app-platform,push,quiet-routes}.ts`, `src/app/actions/{app,push}.ts`, `src/app/api/app/status/route.ts`; admin tags in `src/components/admin/analytics/visitor-table.tsx` and the visitor page; migration `20261024164435_app_install_push`.
+  - Notes:
+    - Installing adds 10% to the welcome discount (newsletter 10% + app 10% = 20%, once per email), decided at checkout from the device (`Visitor.appInstalledAt`) or the email's account (`Customer.appInstalledAt`). The discount line names its parts and is stored on the order (`discountLabel`).
+    - Offers: a bottom card before subscribing, a pulsing navbar icon, an install pop-up after subscribing on the newsletter timing, per-device steps where the browser can't prompt. One switch in Admin › Settings › Newsletter pop-up. No discount wording once the device's account has used it.
+    - Notifications (web push, `web-push` + VAPID keys in env): team chat replies (not while the customer is online, at most one a minute) and order paid/shipped/delivered, to the device that owns the chat or placed the order. Dead subscriptions are deleted on 404/410.
+    - Admin › Visitors: "App · <device>" and "Notifications" tags, App/Notifications rows on the visitor page, "Installed the app" / "Turned on notifications" events.
+- [x] Live chat for every visitor and checkout auto-fill: built 2026-10-25.
+  - Files: `src/lib/chat/start.ts`, `src/app/actions/chat.ts` (`startChatAction`), `src/components/chat/customer/{chat-launcher,chat-window,start-chat,notify-banner}.tsx`, `src/lib/checkout-details.ts`, `src/app/actions/checkout.ts` (`savedDetails`), `src/components/checkout/checkout-form.tsx`; e2e suites in `e2e/`.
+  - Notes:
+    - A floating chat button on every store page (pulses until first opened). With no account on the device, the window asks for an email and a first message: one action opens the account and sends it (3 starts per IP / 2 per email every 15 minutes, plus a trap field). Afterwards it opens straight to the conversation ("Chatting as <email>").
+    - Computers: a floating window, page usable behind it. Phones: full screen and modal. The navbar message icon stays.
+    - Checkout fills name, email, phone and address from the last order placed on this device ("Filled in from your last order · Clear"); a device that only typed an email gets just the email.
+    - Browser suites live in `e2e/` (Playwright, system Chrome); admin steps need `E2E_ADMIN_EMAIL` / `E2E_ADMIN_PASSWORD` for a test owner.
+- [x] P19 (adapted) Push notifications for products: built 2026-10-25.
+  - Files: `src/app/admin/(panel)/push/page.tsx`, `src/components/admin/push/product-push-list.tsx`, `src/app/actions/admin/push.ts`, `src/lib/admin/queries/push.ts`, `src/lib/push-broadcast.ts`, `src/lib/push.ts` (`pushToAll`), `public/sw.js` (image, renotify); migration `20261025050615_push_broadcast`; e2e `e2e/e2e-push.mjs`.
+  - Notes:
+    - Marketing › Push notifications (owner only): device count, last sent, a product search (active, purchasable products) with a Push button each. Push opens a box with an editable title ("Just in: <name>", up to 60) and message ("<price>. Tap to see it.", up to 160), a preview with the photo, and "Send to N devices".
+    - Every device with notifications on gets it, 100 at a time; tapping opens the product. The photo shows on Android and Windows; Apple shows the store icon only. Dead subscriptions are deleted on 404/410.
+    - Each send is kept (`PushBroadcast`): product, title, who sent it, how many the push services accepted, when. The opt-in wording everywhere now mentions new products.

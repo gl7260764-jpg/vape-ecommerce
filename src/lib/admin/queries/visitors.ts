@@ -109,7 +109,7 @@ export async function getVisitor(id: string) {
       },
       orders: { orderBy: { createdAt: "desc" }, select: { id: true, number: true, status: true, totalCents: true, createdAt: true, paymentMethod: true } },
       subscribers: { select: { id: true, email: true, createdAt: true } },
-      _count: { select: { sessions: true, events: true } },
+      _count: { select: { sessions: true, events: true, pushSubscriptions: true } },
     },
   });
   if (!visitor) return null;
@@ -118,7 +118,7 @@ export async function getVisitor(id: string) {
         where: { email: visitor.email, id: { not: visitor.id } },
         orderBy: { lastSeenAt: "desc" },
         take: 10,
-        select: { id: true, device: true, browser: true, os: true, city: true, region: true, country: true, lastSeenAt: true },
+        select: { id: true, device: true, browser: true, os: true, city: true, region: true, country: true, lastSeenAt: true, appInstalledAt: true },
       })
     : [];
   return { ...visitor, otherDevices };

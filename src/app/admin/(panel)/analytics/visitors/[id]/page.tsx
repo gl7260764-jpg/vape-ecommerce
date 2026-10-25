@@ -127,6 +127,8 @@ async function VisitorView({ params }: Pick<PageProps<"/admin/analytics/visitors
           <span className="flex flex-wrap items-center gap-2">
             {v.orders.length > 0 && <StatusPill tone="success" label={`${v.orders.length} ${v.orders.length === 1 ? "order" : "orders"}`} />}
             {subscribedAt && <StatusPill tone="brand" label="Subscriber" />}
+            {v.appInstalledAt && <StatusPill tone="info" label={v.appPlatform ? `App · ${v.appPlatform}` : "App"} />}
+            {v._count.pushSubscriptions > 0 && <StatusPill tone="info" label="Notifications" />}
             {v.sessionCount > 1 && <StatusPill tone="info" label="Returning" />}
             {v.isInternal && <StatusPill tone="neutral" label="Team" />}
             {v.isBot && <StatusPill tone="warning" label="Bot" />}
@@ -213,6 +215,8 @@ async function VisitorView({ params }: Pick<PageProps<"/admin/analytics/visitors
               ],
               ["Browser", v.browser],
               ["System", v.os],
+              ["App", v.appInstalledAt ? `Installed ${formatDateTime(v.appInstalledAt)}${v.appPlatform ? ` · ${v.appPlatform}` : ""}` : "Not installed"],
+              ["Notifications", v._count.pushSubscriptions > 0 ? "On" : "Off"],
             ]}
           />
           {v.otherDevices.length > 0 && (
@@ -228,6 +232,7 @@ async function VisitorView({ params }: Pick<PageProps<"/admin/analytics/visitors
                       <DeviceIcon device={d.device} />
                       <span className="min-w-0 flex-1 truncate">
                         {[d.browser, d.os].filter(Boolean).join(" on ") || "Unknown device"}
+                        {d.appInstalledAt && <span className="ml-1.5 text-xs text-primary-ink">· App</span>}
                         <span className="block text-xs text-muted-foreground">{placeLabel(d) ?? "Location unknown"}</span>
                       </span>
                       <span className="text-xs text-muted-foreground">{timeAgo(d.lastSeenAt)}</span>

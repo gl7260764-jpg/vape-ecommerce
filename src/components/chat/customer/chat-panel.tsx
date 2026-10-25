@@ -9,6 +9,7 @@ import { MessageList } from "@/components/chat/message-list";
 import { PresenceLine } from "@/components/chat/presence-line";
 import { getPusher, listen } from "@/components/chat/pusher-client";
 import { useChat, type ChatActions, type ChatMessage } from "@/components/chat/use-chat";
+import { NotifyBanner } from "@/components/chat/customer/notify-banner";
 import { channels, EVENTS } from "@/lib/chat/channels";
 
 const ACTIONS: ChatActions = {
@@ -30,7 +31,7 @@ type CustomerSnapshot = { store: { online: boolean; lastSeenAt: string | null } 
 const nameFor = (sender: ChatMessage["sender"]) => (sender === "customer" ? "You" : "Best Vape Shop");
 
 /** The customer's side of the conversation, inside the chat sheet. */
-export function ChatPanel({ conversationId, live }: { conversationId: string; live: boolean }) {
+export function ChatPanel({ conversationId, email, live }: { conversationId: string; email?: string | null; live: boolean }) {
   const markSent = useChatUi((s) => s.markSent);
   const chat = useChat<CustomerSnapshot>({
     side: "customer",
@@ -91,11 +92,14 @@ export function ChatPanel({ conversationId, live }: { conversationId: string; li
         </div>
       </header>
 
+      {email && <p className="border-b border-border bg-surface/60 px-4 py-1.5 text-center text-xs text-muted-foreground">Chatting as {email}</p>}
+      <NotifyBanner />
+
       {chat.status === "unavailable" ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-3 px-8 text-center">
           <ChatsCircleIcon className="size-10 text-muted-foreground" aria-hidden />
           <p className="font-medium">This chat isn&apos;t available on this device</p>
-          <p className="text-sm text-muted-foreground">Chat opens on the phone or computer you ordered from.</p>
+          <p className="text-sm text-muted-foreground">Start a new chat from the chat button.</p>
         </div>
       ) : (
         <>

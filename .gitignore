@@ -52,3 +52,6 @@ next-env.d.ts
 
 # agent planning workspaces
 /.superpowers/
+
+# e2e screenshots
+/e2e/out/

@@ -41,6 +41,8 @@ self.addEventListener("push", (event) => {
       icon: "/icons/icon-192.png",
       badge: "/icons/icon-192.png",
       tag: data.tag,
+      renotify: Boolean(data.tag), // a newer one with the same tag replaces the old one and still alerts
+      image: data.image, // a product push's photo (Android and Windows show it; Apple shows the icon only)
       data: { url: data.url || "/" },
     })
   );

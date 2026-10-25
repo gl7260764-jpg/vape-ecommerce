@@ -28,8 +28,9 @@ export const metadata: Metadata = {
   },
   description:
     "Shop IGET, Alibarbar, HQD and more. Genuine disposable vapes with bulk-buy pricing and Australia-wide shipping. Adults 18+ only.",
-  // Added to an iPhone or iPad home screen: the app's name and a dark status bar.
-  appleWebApp: { capable: true, title: "Best Vape", statusBarStyle: "black-translucent" },
+  // Added to an iPhone or iPad home screen: the app's name, and a dark status bar that keeps its own
+  // space (a translucent one would sit on top of the navbar).
+  appleWebApp: { capable: true, title: "Best Vape", statusBarStyle: "black" },
 };
 
 export const viewport: Viewport = {

@@ -52,5 +52,8 @@ export const adminLoginLimiter = attemptLimiter("login", { ip: 8, email: 5 });
 /** Opening an account by email (the account icon, and subscribing): 15 per IP and 10 per email every 15 minutes, since it shows order summaries. */
 export const accountLimiter = attemptLimiter("account", { ip: 15, email: 10 });
 
+/** The live chat's first message: a real person needs one, so 3 per IP and 2 per email every 15 minutes keeps scripts from filling the inbox. */
+export const chatStartLimiter = attemptLimiter("chat-start", { ip: 3, email: 2 });
+
 /** Chat uploads: 40 files per conversation (keyed as the "email") or per IP every 15 minutes. */
 export const chatUploadLimiter = attemptLimiter("chat-upload", { ip: 40, email: 40 });

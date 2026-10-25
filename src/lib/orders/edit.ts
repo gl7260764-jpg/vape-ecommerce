@@ -117,13 +117,15 @@ export async function updateOrder(orderId: string, input: OrderEditInput): Promi
 }
 
 /** Records who changed the status and when, then refreshes the invoice badges in the chat. */
-export async function changeOrderStatus(orderId: string, to: OrderStatusInput, adminId: string): Promise<void> {
+/** Returns false when the order already had that status (nothing changes, nobody is told). */
+export async function changeOrderStatus(orderId: string, to: OrderStatusInput, adminId: string): Promise<boolean> {
   const order = await prisma.order.findUniqueOrThrow({ where: { id: orderId }, select: { status: true, updatedAt: true } });
-  if (order.status === to) return;
+  if (order.status === to) return false;
   await prisma.$transaction([
     // updatedAt marks edits to what the invoice shows; a status change isn't one, so it keeps its value.
     prisma.order.update({ where: { id: orderId }, data: { status: to, updatedAt: order.updatedAt } }),
     prisma.orderStatusChange.create({ data: { orderId, from: order.status, to, adminId } }),
   ]);
   await refreshInvoiceMessages(orderId);
+  return true;
 }

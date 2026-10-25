@@ -13,6 +13,9 @@ type InstallState = {
   isApp: boolean;
   /** Installed just now from this tab (Chromium tells us). */
   installed: boolean;
+  /** The server knows it's installed: by this browser earlier, or by the account on another device. */
+  installedElsewhere: boolean;
+  setInstalledElsewhere: (installed: boolean) => void;
   /** The owner's switch (Admin › Settings › Newsletter pop-up). */
   offersOn: boolean;
   setOffersOn: (on: boolean) => void;
@@ -43,6 +46,8 @@ export const useInstall = create<InstallState>()((set, get) => ({
   canPrompt: false,
   isApp: false,
   installed: false,
+  installedElsewhere: false,
+  setInstalledElsewhere: (installed) => set({ installedElsewhere: installed }),
   offersOn: false,
   setOffersOn: (on) => set({ offersOn: on }),
   quiet: true,
@@ -76,4 +81,4 @@ export const useInstall = create<InstallState>()((set, get) => ({
 }));
 
 /** Whether the navbar's install icon shows (the header also uses it to make room on small phones). */
-export const useInstallIconShown = () => useInstall((s) => s.ready && s.offersOn && !s.isApp && !s.installed && !s.quiet);
+export const useInstallIconShown = () => useInstall((s) => s.ready && s.offersOn && !s.isApp && !s.installed && !s.installedElsewhere && !s.quiet);

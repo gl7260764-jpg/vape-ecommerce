@@ -18,6 +18,8 @@ function Badges({ v }: { v: VisitorRow }) {
     <span className="flex flex-wrap items-center gap-1.5">
       {v._count.orders > 0 && <StatusPill tone="success" label={`${v._count.orders} ${v._count.orders === 1 ? "order" : "orders"}`} />}
       {v._count.subscribers > 0 && <StatusPill tone="brand" label="Subscriber" />}
+      {v.appInstalledAt && <StatusPill tone="info" label={v.appPlatform ? `App · ${v.appPlatform}` : "App"} />}
+      {v._count.pushSubscriptions > 0 && <StatusPill tone="info" label="Notifications" />}
       {v.sessionCount > 1 && <StatusPill tone="info" label="Returning" />}
       {v.isInternal && <StatusPill tone="neutral" label="Team" />}
       {v.isBot && <StatusPill tone="warning" label="Bot" />}

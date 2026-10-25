@@ -1,5 +1,7 @@
 "use server";
 
+import { after } from "next/server";
+import { notifyOrder } from "@/lib/push";
 import { requireAdmin } from "@/lib/admin/auth";
 import { fail, ok, toActionError, type ActionResult } from "@/lib/admin/result";
 import { searchOrderProducts, type OrderProductOption } from "@/lib/admin/queries/orders";
@@ -23,7 +25,11 @@ export async function setOrderStatus(id: string, status: string): Promise<Action
   try {
     const admin = await requireAdmin("orders:write");
     if (!(ORDER_STATUSES as readonly string[]).includes(status)) return fail("Choose a status from the list.");
-    await changeOrderStatus(String(id), status as OrderStatusInput, admin.id);
+    const changed = await changeOrderStatus(String(id), status as OrderStatusInput, admin.id);
+    // The customer's device hears about payment, shipping and delivery (if they turned notifications on).
+    if (changed && (status === "paid" || status === "shipped" || status === "delivered")) {
+      after(() => notifyOrder(String(id), status).catch((error) => console.error("order notification failed", error)));
+    }
     return ok(null);
   } catch (error) {
     return toActionError(error);

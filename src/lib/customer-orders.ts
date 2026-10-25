@@ -49,11 +49,16 @@ export async function currentDeviceTokenHash() {
   return token ? hash(token) : null;
 }
 
-/** Removes every order from this browser's list and drops its cookie (for shared computers). */
+/** Everything a device is remembered by: its orders and its notifications (the chat stays with the team). */
+export async function forgetDevice(tokenHash: string) {
+  await prisma.$transaction([prisma.orderAccess.deleteMany({ where: { tokenHash } }), prisma.pushSubscription.deleteMany({ where: { deviceTokenHash: tokenHash } })]);
+}
+
+/** "Sign out on this device" (for shared phones and computers): forgets the device and drops its cookie. */
 export async function forgetThisDevice() {
   const jar = await cookies();
   const token = await readToken();
-  if (token) await prisma.orderAccess.deleteMany({ where: { tokenHash: hash(token) } });
+  if (token) await forgetDevice(hash(token));
   jar.delete({ name: COOKIE, path: "/" });
 }
 

@@ -5,7 +5,7 @@ import { currentDeviceTokenHash } from "@/lib/customer-orders";
 import { prisma } from "@/lib/db";
 
 /**
- * For the store's chat button: does this device have a chat, and how many replies are unread.
+ * For the store's chat button: does this device have a chat, whose email it's under, and how many replies are unread.
  * Checking in also counts as "delivered" for the store's messages, the way a phone gets its ticks
  * once it comes back online.
  */
@@ -25,10 +25,13 @@ async function status(headers: Record<string, string>) {
   const tokenHash = await currentDeviceTokenHash();
   if (tokenHash) await ensureOrderChats(tokenHash).catch((error) => console.error("chat recovery failed", error));
   const actor = await customerActor();
-  if (!actor) return Response.json({ hasConversation: false, unread: 0, conversationId: null }, { headers });
-  const conversation = await prisma.chatConversation.findUnique({ where: { id: actor.conversationId }, select: { customerUnreadCount: true } });
+  if (!actor) return Response.json({ hasConversation: false, unread: 0, conversationId: null, email: null }, { headers });
+  const conversation = await prisma.chatConversation.findUnique({ where: { id: actor.conversationId }, select: { customerUnreadCount: true, customerEmail: true } });
   await markReceipts(actor, { conversationId: actor.conversationId, kind: "delivered", upTo: new Date().toISOString() }).catch((error) =>
     console.error("chat delivered receipts failed", error)
   );
-  return Response.json({ hasConversation: true, unread: conversation?.customerUnreadCount ?? 0, conversationId: actor.conversationId }, { headers });
+  return Response.json(
+    { hasConversation: true, unread: conversation?.customerUnreadCount ?? 0, conversationId: actor.conversationId, email: conversation?.customerEmail ?? null },
+    { headers }
+  );
 }

@@ -240,7 +240,9 @@ export const visitorRowSelect = {
   pageviewCount: true,
   isBot: true,
   isInternal: true,
-  _count: { select: { orders: true, subscribers: true } },
+  appInstalledAt: true,
+  appPlatform: true,
+  _count: { select: { orders: true, subscribers: true, pushSubscriptions: true } },
 } satisfies Prisma.VisitorSelect;
 
 export type VisitorRow = Prisma.VisitorGetPayload<{ select: typeof visitorRowSelect }>;

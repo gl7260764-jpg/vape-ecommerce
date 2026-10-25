@@ -5,7 +5,9 @@ import { ArrowRightIcon, ChatsCircleIcon, ReceiptIcon } from "@phosphor-icons/re
 import { OrderCard } from "@/components/account/order-card";
 import { SignInForm } from "@/components/account/sign-in-form";
 import { SignOut } from "@/components/account/sign-out";
+import { NotificationsCard } from "@/components/app/notifications-card";
 import { OpenChatButton } from "@/components/chat/customer/open-chat-button";
+import { OpenChatNow } from "@/components/chat/customer/open-chat-now";
 import { Breadcrumbs } from "@/components/store/breadcrumbs";
 import { accountForDevice, addOrderSummaries } from "@/lib/account";
 import { currentDeviceTokenHash, ordersForThisDevice } from "@/lib/customer-orders";
@@ -26,7 +28,7 @@ function SignInCard() {
   );
 }
 
-async function Account() {
+async function Account({ searchParams }: { searchParams: PageProps<"/account">["searchParams"] }) {
   const tokenHash = await currentDeviceTokenHash();
   const account = tokenHash ? await accountForDevice(tokenHash) : null;
   if (!tokenHash || !account) return <SignInCard />;
@@ -55,6 +57,9 @@ async function Account() {
         </OpenChatButton>
       </div>
 
+      <NotificationsCard />
+      {(await searchParams).chat === "1" && <OpenChatNow />}
+
       <h2 className="mt-12 font-display text-2xl font-bold uppercase">Your orders</h2>
       {orders.length ? (
         <ul className="mt-6 grid gap-4">
@@ -81,13 +86,13 @@ async function Account() {
   );
 }
 
-export default function AccountPage() {
+export default function AccountPage({ searchParams }: PageProps<"/account">) {
   return (
     <section className="mx-auto max-w-4xl px-4 pt-28 pb-20 sm:px-6 md:pt-32">
       <Breadcrumbs items={[{ label: "Your account" }]} />
       <h1 className="mt-8 font-display text-[clamp(2.25rem,6vw,4rem)] leading-[0.92] font-extrabold tracking-[-0.03em] uppercase">Your account</h1>
       <Suspense fallback={<div className="mt-10 h-72 animate-pulse rounded-[var(--radius-tile)] bg-surface" aria-label="Loading your account" />}>
-        <Account />
+        <Account searchParams={searchParams} />
       </Suspense>
     </section>
   );

@@ -14,7 +14,7 @@ const CARD =
 
 function Card({ label, title, text, action, onClose }: { label: string; title: string; text: string; action: React.ReactNode; onClose: () => void }) {
   return (
-    <aside aria-label={label} className={CARD}>
+    <aside aria-label={label} data-bottom-card className={CARD}>
       <Image src="/icons/icon-192.png" alt="" width={44} height={44} className="size-11 shrink-0 rounded-xl" />
       <div className="min-w-0 flex-1">
         <p className="text-sm leading-snug font-semibold">{title}</p>
@@ -41,6 +41,23 @@ export function InstallCard({ discount, onInstall, onClose }: { discount: boolea
       action={
         <button type="button" onClick={onInstall} className={PILL}>
           Install
+        </button>
+      }
+    />
+  );
+}
+
+/** Inside the installed app, once: notifications for chat replies and order updates. */
+export function NotifyCard({ onTurnOn, onClose }: { onTurnOn: () => void; onClose: () => void }) {
+  return (
+    <Card
+      label="Turn on notifications"
+      title="Turn on notifications"
+      text="Get told when we reply, your order ships, or new products land."
+      onClose={onClose}
+      action={
+        <button type="button" onClick={onTurnOn} className={PILL}>
+          Turn on
         </button>
       }
     />

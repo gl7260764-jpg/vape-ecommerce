@@ -1,7 +1,14 @@
 "use server";
 
+import { headers } from "next/headers";
 import { z } from "zod";
+import { clientIpFrom } from "@/lib/analytics/geo";
+import { currentVisit } from "@/lib/analytics/record";
+import { markAccountInstalled } from "@/lib/app-install";
 import { customerActor } from "@/lib/chat/access";
+import { startChat } from "@/lib/chat/start";
+import { deviceTokenHashForWrite } from "@/lib/customer-orders";
+import { chatStartLimiter } from "@/lib/rate-limit";
 import { answerInvoice as answer, ChatError, chatErrorMessage, deleteMessage, editMessage, markReceipts, react, sendMessage } from "@/lib/chat/service";
 import type { ChatMessageDTO } from "@/lib/chat/types";
 import { fail, ok, type ActionResult } from "@/lib/admin/result";
@@ -74,4 +81,36 @@ export async function customerReceipts(input: { kind: "delivered" | "read"; upTo
 /** "Yes, all correct" or "Something's wrong" under an invoice. Returns the answer and the automatic reply. */
 export async function answerInvoice(input: { invoiceId: string; answer: "confirmed" | "disputed" }): Promise<ActionResult<ChatMessageDTO[]>> {
   return asCustomer((actor) => answer(actor, { invoiceId: String(input.invoiceId), answer: input.answer }));
+}
+
+const startEmail = z.string().trim().toLowerCase().max(254).pipe(z.email());
+
+export type StartChatResult = { ok: true; email: string } | { ok: false; error: string };
+
+/**
+ * The live chat's first message, from a device with no chat yet: opens the account for the email (or
+ * signs this device into it) and sends the message. A tight limit (3 per IP, 2 per email every 15 minutes) and `website`, a
+ * field people never see, keep scripts from filling the team's inbox.
+ */
+export async function startChatAction(input: { email: string; message: string; website?: string }): Promise<StartChatResult> {
+  const failed = { ok: false as const, error: "Something went wrong. Please try again in a moment." };
+  if (input?.website) return failed;
+  const parsed = startEmail.safeParse(input?.email ?? "");
+  if (!parsed.success) return { ok: false, error: "Enter a valid email, like name@example.com." };
+  const message = String(input?.message ?? "").trim();
+  if (!message) return { ok: false, error: "Type a message to send." };
+
+  try {
+    const ip = clientIpFrom(await headers()) ?? "unknown";
+    if (await chatStartLimiter.isLimited(ip, parsed.data)) return { ok: false, error: "Too many tries. Wait 15 minutes, then try again." };
+    await chatStartLimiter.record(ip, parsed.data);
+    const tokenHash = await deviceTokenHashForWrite();
+    const started = await startChat(tokenHash, parsed.data, message);
+    await markAccountInstalled({ visitorId: (await currentVisit()).visitorId, tokenHash }).catch((error) => console.error("mark account installed failed", error));
+    return { ok: true, email: started.email };
+  } catch (error) {
+    if (error instanceof ChatError) return { ok: false, error: chatErrorMessage(error.code) };
+    console.error("start chat failed", error);
+    return failed;
+  }
 }

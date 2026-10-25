@@ -4,12 +4,14 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { forgetOrders } from "@/app/actions/orders";
+import { useNotifications } from "@/components/app/use-notifications";
 import { useChatUi } from "@/components/chat/chat-ui-store";
 
 /** Two-step "sign out on this device", for shared or borrowed phones and computers. */
 export function SignOut() {
   const router = useRouter();
   const reloadStatus = useChatUi((s) => s.reloadStatus);
+  const notifications = useNotifications();
   const [confirming, setConfirming] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -28,6 +30,8 @@ export function SignOut() {
         disabled={pending}
         onClick={() =>
           startTransition(async () => {
+            // This browser stops receiving the previous account's notifications too.
+            if (notifications.state === "on") await notifications.turnOff().catch(() => {});
             const result = await forgetOrders();
             if (!result.ok) {
               toast.error("That didn't work. Please try again.");

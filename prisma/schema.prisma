@@ -139,6 +139,7 @@ model Product {
   publishedAt     DateTime?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+  pushBroadcasts  PushBroadcast[]
 
   @@index([status, isFeatured])
   @@index([type, status])
@@ -321,6 +322,7 @@ model AdminUser {
   orderStatusChanges OrderStatusChange[]
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
+  pushBroadcasts     PushBroadcast[]
 }
 
 /// One signed-in browser. The cookie holds a random token; only its SHA-256 is stored here.
@@ -674,4 +676,22 @@ model DiscountRedemption {
   order     Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
   percent   Int
   createdAt DateTime @default(now())
+}
+
+/// A product pushed from Admin › Push notifications to every device with notifications on.
+model PushBroadcast {
+  id        String     @id @default(cuid())
+  productId String?
+  product   Product?   @relation(fields: [productId], references: [id], onDelete: SetNull)
+  title     String
+  body      String
+  url       String
+  image     String?
+  sentById  String?
+  sentBy    AdminUser? @relation(fields: [sentById], references: [id], onDelete: SetNull)
+  sentCount Int
+  createdAt DateTime   @default(now())
+
+  @@index([createdAt])
+  @@index([productId])
 }
