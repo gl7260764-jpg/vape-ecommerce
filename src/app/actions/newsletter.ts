@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { after } from "next/server";
 import { openAccount } from "@/lib/account";
+import { alertNewSubscriber } from "@/lib/alerts";
 import { markAccountInstalled } from "@/lib/app-install";
 import { clientIpFrom } from "@/lib/analytics/geo";
 import { currentVisit, existingVisitorId, recordServerEvent } from "@/lib/analytics/record";
@@ -37,7 +38,8 @@ export async function subscribe(_previous: SubscribeState, formData: FormData): 
   try {
     const visit = await currentVisit();
     const visitorId = await existingVisitorId(visit.visitorId).catch(() => null);
-    await subscribeEmail(email, "footer", visitorId);
+    const { isNew } = await subscribeEmail(email, "footer", visitorId);
+    if (isNew) after(() => alertNewSubscriber(email));
     await openAccountAfterSubscribe(email);
     after(() => recordServerEvent({ ...visit, type: "subscribe", path: "/", label: "Newsletter", email }));
     return { status: "done" };
@@ -57,7 +59,8 @@ export async function subscribeFromPopup(input: { email: string }): Promise<Popu
   try {
     const visit = await currentVisit();
     const visitorId = await existingVisitorId(visit.visitorId).catch(() => null);
-    const { discount } = await subscribeEmail(email, "popup", visitorId);
+    const { discount, isNew } = await subscribeEmail(email, "popup", visitorId);
+    if (isNew) after(() => alertNewSubscriber(email));
     await openAccountAfterSubscribe(email);
     after(() => recordServerEvent({ ...visit, type: "subscribe", path: "/", label: "Newsletter pop-up", email }));
     return { ok: true, discount };

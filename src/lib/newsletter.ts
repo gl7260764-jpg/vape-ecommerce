@@ -33,12 +33,16 @@ export async function claimDiscount(tx: Prisma.TransactionClient, email: string,
   return count === 1;
 }
 
-/** Adds (or keeps) a subscriber and says whether their 10% is still waiting or was already used. */
-export async function subscribeEmail(email: string, source: "footer" | "popup" | "admin", visitorId: string | null): Promise<{ discount: "saved" | "used" }> {
+/**
+ * Adds (or keeps) a subscriber and says whether their 10% is still waiting or was already used, and
+ * whether the email is new (the team is alerted once per subscriber).
+ */
+export async function subscribeEmail(email: string, source: "footer" | "popup" | "admin", visitorId: string | null): Promise<{ discount: "saved" | "used"; isNew: boolean }> {
   const e = normalise(email);
-  await prisma.subscriber.upsert({ where: { email: e }, create: { email: e, source, visitorId }, update: visitorId ? { visitorId } : {} });
+  const { count } = await prisma.subscriber.createMany({ data: [{ email: e, source, visitorId }], skipDuplicates: true });
+  if (!count && visitorId) await prisma.subscriber.update({ where: { email: e }, data: { visitorId } });
   const used = await prisma.discountRedemption.findUnique({ where: { email: e }, select: { email: true } });
-  return { discount: used ? "used" : "saved" };
+  return { discount: used ? "used" : "saved", isNew: count === 1 };
 }
 
 export type NewsletterSettingsValues = {

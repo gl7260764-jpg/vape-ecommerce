@@ -5,7 +5,9 @@ import { requireAdmin } from "@/lib/admin/auth";
 import { fail, ok, toActionError, type ActionResult } from "@/lib/admin/result";
 import { refreshNewsletter, refreshShipping } from "@/lib/admin/revalidate";
 import { shippingSettingsSchema, type ShippingMethodInput } from "@/lib/admin/schemas/shipping";
+import { alertSettingsSchema, type AlertSettingsInput } from "@/lib/admin/schemas/alerts";
 import { businessSchema, type BusinessInput } from "@/lib/admin/schemas/business";
+import { saveAlertTopic, sendTestAlert } from "@/lib/alerts";
 import { newsletterSettingsSchema, type NewsletterSettingsInput } from "@/lib/admin/schemas/newsletter";
 import { saveNewsletterSettings as storeNewsletterSettings } from "@/lib/newsletter";
 import { saveStoreProfile } from "@/lib/store-profile";
@@ -75,6 +77,33 @@ export async function saveNewsletterSettings(input: NewsletterSettingsInput): Pr
     }
     await storeNewsletterSettings(parsed.data);
     refreshNewsletter();
+    return ok(null);
+  } catch (error) {
+    return toActionError(error);
+  }
+}
+
+/** The ntfy topic the team's phones subscribe to. Empty turns the alerts off. */
+export async function saveAlertSettings(input: AlertSettingsInput): Promise<ActionResult<{ on: boolean }>> {
+  try {
+    await requireAdmin("settings:write");
+    const parsed = alertSettingsSchema.safeParse(input);
+    if (!parsed.success) return fail("Some fields need attention.", { topic: parsed.error.issues[0].message });
+    await saveAlertTopic(parsed.data.topic);
+    return ok({ on: Boolean(parsed.data.topic) });
+  } catch (error) {
+    return toActionError(error);
+  }
+}
+
+/** Sends a test alert to the topic in the box (saved or not), so the owner can check their phone. */
+export async function sendAlertTest(input: AlertSettingsInput): Promise<ActionResult> {
+  try {
+    await requireAdmin("settings:write");
+    const parsed = alertSettingsSchema.safeParse(input);
+    if (!parsed.success) return fail("Some fields need attention.", { topic: parsed.error.issues[0].message });
+    if (!parsed.data.topic) return fail("Make a topic first.");
+    if (!(await sendTestAlert(parsed.data.topic))) return fail("ntfy didn't take it. Check your connection and try again.");
     return ok(null);
   } catch (error) {
     return toActionError(error);

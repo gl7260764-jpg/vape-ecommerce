@@ -628,12 +628,13 @@ model OrderStatusChange {
 
 /// The store's own details for the invoice header. One row, id "store". Empty until the owner fills it in.
 model StoreProfile {
-  id        String   @id @default("store")
-  email     String?
-  phone     String? // E.164
-  address   String? // multi-line
-  abn       String? // 11 digits, no spaces
-  updatedAt DateTime @updatedAt
+  id         String   @id @default("store")
+  email      String?
+  phone      String? // E.164
+  address    String? // multi-line
+  abn        String? // 11 digits, no spaces
+  alertTopic String? // the ntfy topic the team's phones subscribe to for new orders, messages and subscribers; empty = off
+  updatedAt  DateTime @updatedAt
 }
 
 // ---------------------------------------------------------------------------

@@ -3,6 +3,7 @@
 import { randomBytes } from "node:crypto";
 import { after } from "next/server";
 import { prisma } from "@/lib/db";
+import { alertNewOrder } from "@/lib/alerts";
 import { normaliseAuPhone, orderNumber, validateCheckout, type CartLineInput, type CheckoutFormValues, type FieldErrors } from "@/lib/checkout";
 import { priceLines, type PricedLine } from "@/lib/checkout-queries";
 import { currentVisit, existingVisitorId, recordServerEvent } from "@/lib/analytics/record";
@@ -157,6 +158,7 @@ export async function placeOrder(input: { form: CheckoutFormValues; lines: CartL
     after(() =>
       recordServerEvent({ ...visit, type: "place_order", path: "/checkout", label: orderNumber(order.number), value: order.totalCents, email: form.email })
     );
+    after(() => alertNewOrder(order.id)); // the team's phones (ntfy)
     return { ok: true, token: order.publicToken };
   } catch (error) {
     if (error instanceof DiscountGone) return { ok: false, totalChanged: true, error: TOTAL_CHANGED };

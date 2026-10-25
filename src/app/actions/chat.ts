@@ -1,7 +1,9 @@
 "use server";
 
 import { headers } from "next/headers";
+import { after } from "next/server";
 import { z } from "zod";
+import { alertCustomerMessage } from "@/lib/alerts";
 import { clientIpFrom } from "@/lib/analytics/geo";
 import { currentVisit } from "@/lib/analytics/record";
 import { markAccountInstalled } from "@/lib/app-install";
@@ -52,7 +54,12 @@ const sendInput = z.object({
 export async function sendCustomerMessage(input: z.input<typeof sendInput>): Promise<ActionResult<ChatMessageDTO>> {
   const parsed = sendInput.safeParse(input);
   if (!parsed.success) return fail("That message couldn't be sent.");
-  return asCustomer((actor) => sendMessage(actor, { ...parsed.data, conversationId: actor.conversationId }));
+  return asCustomer(async (actor) => {
+    const message = await sendMessage(actor, { ...parsed.data, conversationId: actor.conversationId });
+    const text = message.body || (message.attachment?.kind === "image" ? "Sent a photo" : "Sent a file");
+    after(() => alertCustomerMessage(actor.conversationId, text));
+    return message;
+  });
 }
 
 export async function editCustomerMessage(input: { id: string; body: string }): Promise<ActionResult<ChatMessageDTO>> {
@@ -80,7 +87,12 @@ export async function customerReceipts(input: { kind: "delivered" | "read"; upTo
 
 /** "Yes, all correct" or "Something's wrong" under an invoice. Returns the answer and the automatic reply. */
 export async function answerInvoice(input: { invoiceId: string; answer: "confirmed" | "disputed" }): Promise<ActionResult<ChatMessageDTO[]>> {
-  return asCustomer((actor) => answer(actor, { invoiceId: String(input.invoiceId), answer: input.answer }));
+  return asCustomer(async (actor) => {
+    const messages = await answer(actor, { invoiceId: String(input.invoiceId), answer: input.answer });
+    const reply = messages.find((m) => m.sender === "customer"); // none when it was answered already
+    if (reply) after(() => alertCustomerMessage(actor.conversationId, reply.body));
+    return messages;
+  });
 }
 
 const startEmail = z.string().trim().toLowerCase().max(254).pipe(z.email());
@@ -106,6 +118,7 @@ export async function startChatAction(input: { email: string; message: string; w
     await chatStartLimiter.record(ip, parsed.data);
     const tokenHash = await deviceTokenHashForWrite();
     const started = await startChat(tokenHash, parsed.data, message);
+    after(() => alertCustomerMessage(started.conversationId, message));
     await markAccountInstalled({ visitorId: (await currentVisit()).visitorId, tokenHash }).catch((error) => console.error("mark account installed failed", error));
     return { ok: true, email: started.email };
   } catch (error) {
