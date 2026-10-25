@@ -9,7 +9,7 @@ import { alertCustomerMessage, alertNewOrder, alertNewSubscriber, getAlertTopic,
 
 // Against the real database with the ntfy call replaced. The store has one topic, so it's put back after.
 const stamp = randomUUID().slice(0, 8);
-const SITE = process.env.SITE_URL ?? "https://bestvapeshopaustralia.com.au";
+const SITE = process.env.SITE_URL ?? "https://vapesupplieraustralia.com";
 const NTFY = process.env.NTFY_URL ?? "https://ntfy.sh";
 const topic = `test-${stamp}`;
 const orderIds: string[] = [];

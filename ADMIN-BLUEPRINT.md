@@ -265,3 +265,9 @@ Permissions: `catalog:write`, `catalog:delete`, `orders:write`, `settings:write`
     - Settings › Phone alerts (owner only): "Make a topic" (a long random ntfy topic, at least 12 characters), Save, Send test. Anyone who subscribes to the topic in the ntfy app gets the alerts; an empty topic turns them off.
     - Alerts: a new order (number, total, first name, item count; opens the admin order), every customer chat message including the first one and invoice answers (opens the chat; the team's own replies never alert), and a new subscriber (quiet, opens Subscribers). No addresses or phone numbers.
     - Sent after the response (`after()`), with a 5 s timeout; ntfy being down never affects an order, a message or a sign-up. `NTFY_URL` points at a self-hosted ntfy (default https://ntfy.sh).
+- [x] Contact page, enquiries and Brevo email: built 2026-10-25.
+  - Files: `src/app/(store)/contact/page.tsx`, `src/components/store/{enquiry-form,contact-chat-button}.tsx`, `src/app/actions/contact.ts` (`sendEnquiry`), `src/lib/{enquiries,email,site}.ts`, `src/app/admin/(panel)/enquiries/page.tsx`, `src/app/actions/admin/enquiries.ts`, `src/lib/admin/queries/enquiries.ts`; migration `*_enquiries`; e2e `e2e/e2e-enquiry.mjs`.
+  - Notes:
+    - /contact: email, phone and live chat cards, and a form (name, email, optional phone, message; a trap field and 3 per IP / 2 per email every 15 minutes).
+    - Each enquiry is saved for Admin › Enquiries (Sales; every team member): New and Done, with Reply by email, Call and Mark as done. It also sends a ntfy phone alert and, with `BREVO_API_KEY` set, an email to the contact address that replies to the customer (Brevo; the contact address must be a verified sender). Neither failing affects the customer.
+    - The store's address and contact details live in `src/lib/site.ts` (`SITE_URL` env overrides the domain).

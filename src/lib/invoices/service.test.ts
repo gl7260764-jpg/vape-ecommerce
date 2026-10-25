@@ -57,7 +57,7 @@ test("snapshot copies the order, items and business details", async () => {
   assert.equal(plain.number, `INV-${order.number}`);
   assert.equal(plain.orderNumber, order.number);
   assert.equal(plain.taxInvoice, false);
-  assert.equal(plain.business.website, "bestvapeshopaustralia.com.au");
+  assert.equal(plain.business.website, "vapesupplieraustralia.com");
   assert.deepEqual(plain.billedTo, { name: "Invoice Tester", email: `test.invoice.${stamp}@example.com`, phone: "+61412345678" });
   assert.equal(plain.shipTo.addressLine1, "12 George Street");
   assert.equal(plain.shipTo.addressLine2, "Unit 4");
@@ -73,7 +73,7 @@ test("snapshot copies the order, items and business details", async () => {
   const tax = await buildSnapshot(order.id, 2);
   assert.equal(tax.taxInvoice, true);
   assert.equal(tax.number, `INV-${order.number}-2`);
-  assert.deepEqual(tax.business, { website: "bestvapeshopaustralia.com.au", email: "hello@example.com", phone: "+61400000000", address: "1 Shop St\nSydney NSW 2000", abn: "12345678901" });
+  assert.deepEqual(tax.business, { website: "vapesupplieraustralia.com", email: "hello@example.com", phone: "+61400000000", address: "1 Shop St\nSydney NSW 2000", abn: "12345678901" });
 });
 
 test("createInvoice numbers versions and asks only while awaiting payment", async () => {

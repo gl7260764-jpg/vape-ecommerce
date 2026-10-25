@@ -12,6 +12,7 @@ import { BUTTON, Card, CardHeader } from "@/components/admin/ui/primitives";
 import type { AdminBrand } from "@/lib/admin/queries/taxonomy";
 import { brandSchema, fieldErrors } from "@/lib/admin/schemas/taxonomy";
 import { slugify } from "@/lib/admin/slug";
+import { SITE_HOST } from "@/lib/site";
 
 export function BrandEditor({ brand, canDelete }: { brand?: AdminBrand; canDelete: boolean }) {
   const router = useRouter();
@@ -62,7 +63,7 @@ export function BrandEditor({ brand, canDelete }: { brand?: AdminBrand; canDelet
               placeholder="IGET"
             />
           </Field>
-          <Field id="slug" label="Web address" error={errors.slug} hint={slug ? `bestvapeshopaustralia.com.au/brand/${slug}` : "Made from the name. You can change it."}>
+          <Field id="slug" label="Web address" error={errors.slug} hint={slug ? `${SITE_HOST}/brand/${slug}` : "Made from the name. You can change it."}>
             <div className="flex items-center rounded-xl border border-input bg-background/60 focus-within:border-primary focus-within:ring-3 focus-within:ring-ring/40">
               <span className="pl-3.5 text-sm whitespace-nowrap text-muted-foreground">/brand/</span>
               <input

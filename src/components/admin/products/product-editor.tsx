@@ -26,6 +26,7 @@ import {
 } from "@/lib/admin/schemas/product";
 import { slugify } from "@/lib/admin/slug";
 import { cn } from "@/lib/utils";
+import { SITE_HOST } from "@/lib/site";
 
 type FormState = {
   name: string;
@@ -320,7 +321,7 @@ export function ProductEditor({ product, options, canDelete }: { product?: Admin
               <Field id="name" label="Name" error={err("name")}>
                 <input id="name" value={state.name} onChange={text("name")} aria-invalid={Boolean(err("name"))} className={CONTROL} placeholder="IGET Bar Plus 6000 Puffs - Grape Ice" />
               </Field>
-              <Field id="slug" label="Web address" error={err("slug")} hint={state.slug ? `bestvapeshopaustralia.com.au/product/${state.slug}` : "Made from the name. You can change it."}>
+              <Field id="slug" label="Web address" error={err("slug")} hint={state.slug ? `${SITE_HOST}/product/${state.slug}` : "Made from the name. You can change it."}>
                 <div className="flex items-center rounded-xl border border-input bg-background/60 focus-within:border-primary focus-within:ring-3 focus-within:ring-ring/40">
                   <span className="pl-3.5 text-sm whitespace-nowrap text-muted-foreground">/product/</span>
                   <input
@@ -432,7 +433,7 @@ export function ProductEditor({ product, options, canDelete }: { product?: Admin
             <CardHeader title="Search engine listing" description="Leave blank to use the name and short description." />
             <div className="grid gap-5 p-5">
               <div className="rounded-xl border border-border bg-background/60 p-4">
-                <p className="truncate text-xs text-muted-foreground">bestvapeshopaustralia.com.au › product › {state.slug || "..."}</p>
+                <p className="truncate text-xs text-muted-foreground">{SITE_HOST} › product › {state.slug || "..."}</p>
                 <p className="mt-1 line-clamp-1 text-base text-sky-700 dark:text-sky-300">{seoTitle} | Best Vape Shop Australia</p>
                 <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{seoDescription}</p>
               </div>

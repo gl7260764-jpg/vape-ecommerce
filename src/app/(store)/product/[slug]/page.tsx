@@ -11,10 +11,10 @@ import { SpecTiles } from "@/components/product/spec-tiles";
 import { ProductCard } from "@/components/site/product-card";
 import { allProductSlugs, getProduct, type ProductDetail } from "@/lib/catalog-queries";
 import { productMeta } from "@/lib/catalog";
+import { SITE_URL as SITE } from "@/lib/site";
 
 type Props = PageProps<"/product/[slug]">;
 
-const SITE = process.env.SITE_URL ?? "https://bestvapeshopaustralia.com.au";
 const NICOTINE_TYPES = new Set(["disposable", "e_liquid", "nicotine_pouch", "bundle", "pod_kit"]);
 
 export async function generateStaticParams() {

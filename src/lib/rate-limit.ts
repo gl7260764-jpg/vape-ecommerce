@@ -57,3 +57,6 @@ export const chatStartLimiter = attemptLimiter("chat-start", { ip: 3, email: 2 }
 
 /** Chat uploads: 40 files per conversation (keyed as the "email") or per IP every 15 minutes. */
 export const chatUploadLimiter = attemptLimiter("chat-upload", { ip: 40, email: 40 });
+
+/** The contact page's form: 3 per IP and 2 per email every 15 minutes, like starting a chat. */
+export const enquiryLimiter = attemptLimiter("enquiry", { ip: 3, email: 2 });

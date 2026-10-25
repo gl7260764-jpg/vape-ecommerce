@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Archivo, Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -21,7 +23,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.SITE_URL ?? "https://bestvapeshopaustralia.com.au"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Best Vape Shop Australia | Disposable Vapes, Bulk Buys",
     template: "%s | Best Vape Shop Australia",
@@ -54,6 +56,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
           <Toaster position="bottom-center" />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

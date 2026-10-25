@@ -3,6 +3,7 @@ import webpush from "web-push";
 import { isOnline } from "@/lib/chat/rules";
 import { orderNumber } from "@/lib/checkout";
 import { prisma } from "@/lib/db";
+import { SITE_URL } from "@/lib/site";
 
 // Notifications (web push). A subscription belongs to a device, so a chat reply reaches that chat's
 // device and an order update the device that placed the order: never anyone who only typed the email.
@@ -14,7 +15,7 @@ type Sender = (subscription: Subscription, payload: string) => Promise<number>;
 
 const PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 const PRIVATE_KEY = process.env.VAPID_PRIVATE_KEY;
-const SUBJECT = process.env.VAPID_SUBJECT ?? "https://bestvapeshopaustralia.com.au";
+const SUBJECT = process.env.VAPID_SUBJECT ?? SITE_URL;
 /** Without the two VAPID settings, nothing is sent and the store hides the notifications button. */
 export const pushConfigured = Boolean(PUBLIC_KEY && PRIVATE_KEY);
 

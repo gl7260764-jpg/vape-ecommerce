@@ -696,3 +696,19 @@ model PushBroadcast {
   @@index([createdAt])
   @@index([productId])
 }
+
+/// A message from the contact page's form. The team sees it in Admin › Enquiries, gets a phone alert
+/// (ntfy), and an email through Brevo when BREVO_API_KEY is set.
+model Enquiry {
+  id        String    @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  emailedAt DateTime? // Brevo accepted the email to the store's inbox
+  handledAt DateTime? // marked done in the admin
+  createdAt DateTime  @default(now())
+
+  @@index([createdAt])
+  @@index([handledAt])
+}

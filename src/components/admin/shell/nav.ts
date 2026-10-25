@@ -1,4 +1,4 @@
-import { BellRingingIcon, BuildingsIcon, ChartBarIcon, ChatsCircleIcon, DeviceMobileIcon, EnvelopeSimpleIcon, ReceiptIcon, FoldersIcon, MegaphoneIcon, PackageIcon, SquaresFourIcon, TrademarkIcon, TruckIcon, UsersThreeIcon, type Icon } from "@phosphor-icons/react";
+import { BellRingingIcon, BuildingsIcon, ChartBarIcon, ChatsCircleIcon, DeviceMobileIcon, EnvelopeOpenIcon, EnvelopeSimpleIcon, ReceiptIcon, FoldersIcon, MegaphoneIcon, PackageIcon, SquaresFourIcon, TrademarkIcon, TruckIcon, UsersThreeIcon, type Icon } from "@phosphor-icons/react";
 import type { Permission } from "@/lib/admin/auth";
 
 export type NavItem = { href: string; label: string; icon: Icon; permission?: Permission };
@@ -12,6 +12,7 @@ export const NAV_GROUPS: NavGroup[] = [
     items: [
       { href: "/admin/orders", label: "Orders", icon: ReceiptIcon },
       { href: "/admin/chats", label: "Chats", icon: ChatsCircleIcon },
+      { href: "/admin/enquiries", label: "Enquiries", icon: EnvelopeOpenIcon },
     ],
   },
   {

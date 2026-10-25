@@ -1,5 +1,6 @@
 // Invoice rules shared by the server and the UI. Pure and client-safe.
 import type { InvoiceStatus, OrderStatusValue } from "@/lib/invoices/types";
+import { SITE_HOST } from "@/lib/site";
 
 /** INV-10053 for the first invoice of an order, then INV-10053-2, INV-10053-3. */
 export const invoiceNumber = (orderNumber: number, version: number) => (version <= 1 ? `INV-${orderNumber}` : `INV-${orderNumber}-${version}`);
@@ -59,4 +60,4 @@ export const ORDER_STATUS_LABEL: Record<OrderStatusValue, string> = {
   cancelled: "Cancelled",
 };
 
-export const STORE_WEBSITE = "bestvapeshopaustralia.com.au";
+export const STORE_WEBSITE = SITE_HOST;

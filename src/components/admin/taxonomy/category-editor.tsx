@@ -15,6 +15,7 @@ import type { AdminCategory, CategoryEditorOptions } from "@/lib/admin/queries/t
 import { CATEGORY_KINDS, categorySchema, fieldErrors, type CategoryInput } from "@/lib/admin/schemas/taxonomy";
 import { slugify } from "@/lib/admin/slug";
 import { cn } from "@/lib/utils";
+import { SITE_HOST } from "@/lib/site";
 
 type State = Omit<CategoryInput, "sortOrder" | "parentId" | "brandId" | "tagline" | "description" | "metaTitle" | "metaDescription"> & {
   sortOrder: string;
@@ -124,7 +125,7 @@ export function CategoryEditor({ category, options, canDelete }: { category?: Ad
               <Field id="name" label="Name" error={err("name")}>
                 <input id="name" value={state.name} onChange={text("name")} aria-invalid={Boolean(err("name"))} className={CONTROL} placeholder="IGET Bar Plus" />
               </Field>
-              <Field id="slug" label="Web address" error={err("slug")} hint={state.slug ? `bestvapeshopaustralia.com.au/product-category/${state.slug}` : "Made from the name. You can change it."}>
+              <Field id="slug" label="Web address" error={err("slug")} hint={state.slug ? `${SITE_HOST}/product-category/${state.slug}` : "Made from the name. You can change it."}>
                 <div className="flex items-center rounded-xl border border-input bg-background/60 focus-within:border-primary focus-within:ring-3 focus-within:ring-ring/40">
                   <span className="pl-3.5 text-sm whitespace-nowrap text-muted-foreground">/product-category/</span>
                   <input

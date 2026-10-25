@@ -32,3 +32,14 @@ test("starting a chat is limited to 3 per address", async () => {
   assert.equal(await chatStartLimiter.isLimited(ip, `test.chat.${stamp}.new@example.com`), true, "a fourth new chat from one address waits");
   await prisma.loginAttempt.deleteMany({ where: { key: { startsWith: "chat-start:" }, OR: [{ key: { contains: stamp } }] } });
 });
+
+test("sending an enquiry is limited to 3 per address", async () => {
+  const { enquiryLimiter } = await import("./rate-limit");
+  const ip = `test-${stamp}-enquiry`;
+  for (let i = 0; i < 3; i++) {
+    assert.equal(await enquiryLimiter.isLimited(ip, `test.enquiry.${stamp}.${i}@example.com`), false, `enquiry ${i + 1} is allowed`);
+    await enquiryLimiter.record(ip, `test.enquiry.${stamp}.${i}@example.com`);
+  }
+  assert.equal(await enquiryLimiter.isLimited(ip, `test.enquiry.${stamp}.new@example.com`), true, "a fourth from one address waits");
+  await prisma.loginAttempt.deleteMany({ where: { key: { startsWith: "enquiry:" }, OR: [{ key: { contains: stamp } }] } });
+});
