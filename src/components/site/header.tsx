@@ -16,12 +16,14 @@ import type { Product } from "@/lib/catalog";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { useLenisLock } from "@/hooks/use-lenis-lock";
+import { useDarkHero } from "@/components/site/dark-hero";
 import { cn } from "@/lib/utils";
 
 export function Header({ products }: { products: Product[] }) {
   const ref = useRef<HTMLElement>(null);
   const badgeRef = useRef<HTMLSpanElement>(null);
   const [scrolled, setScrolled] = useState(false);
+  const darkHero = useDarkHero((s) => s.on);
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const hydrated = useHydrated();
@@ -76,7 +78,8 @@ export function Header({ products }: { products: Product[] }) {
         ref={ref}
         className={cn(
           "fixed inset-x-0 top-0 z-[var(--z-header)] transition-[background-color,box-shadow,border-color] duration-500",
-          scrolled ? "glass border-b border-border" : "border-b border-transparent"
+          scrolled ? "glass border-b border-border" : "border-b border-transparent",
+          darkHero && !scrolled && "dark text-foreground"
         )}
       >
         <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-3 px-4 sm:gap-6 sm:px-6 lg:h-[4.5rem] lg:px-10">

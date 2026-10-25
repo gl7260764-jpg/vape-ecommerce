@@ -1,24 +1,33 @@
 "use client";
 
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ArrowDownRightIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
-import { VaporCanvas } from "@/components/home/vapor-canvas";
+import { useDarkHero } from "@/components/site/dark-hero";
 import { gsap, SplitText, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
-// Stock loop: "White smoke against black background" by cottonbro studio (Pexels 9694806,
-// Pexels License, free for commercial use). Trimmed, mirrored and crossfaded into a 9.5s loop.
-// Swap for a generated clip later. The WebGL vapor stays underneath until the video can play.
-const HERO_VIDEO: string | null = "/hero/vapor.mp4";
-const HERO_POSTER = "/hero/vapor-poster.jpg";
+// Stock loop: "Man vaping indoors with dark background" (Pexels 38917906, Pexels License, free for
+// commercial use; the face is out of frame). Seconds 13-23, faded at both ends so it loops. Phones get
+// a tall crop around the vape and the cloud. The still shows until the loop can play.
+const PHONE = "(max-width: 767px)";
+const HERO_VIDEO = { phone: "/hero/vape-cloud-phone.mp4", desktop: "/hero/vape-cloud.mp4" };
+const still = { alt: "", sizes: "100vw", loading: "eager", fetchPriority: "high" } as const;
+const desktopStill = getImageProps({ ...still, src: "/hero/vape-cloud.jpg", width: 1920, height: 1080 }).props.srcSet;
+const { srcSet: phoneStill, ...stillProps } = getImageProps({ ...still, src: "/hero/vape-cloud-phone.jpg", width: 540, height: 960 }).props;
 
 export function Hero() {
   const root = useRef<HTMLElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const [videoReady, setVideoReady] = useState(false);
-  const [canvasOn, setCanvasOn] = useState(true);
+  const setDarkHero = useDarkHero((s) => s.set);
+
+  // The hero is dark in both themes: the header over it uses its dark look until the page scrolls.
+  useEffect(() => {
+    setDarkHero(true);
+    return () => setDarkHero(false);
+  }, [setDarkHero]);
 
   // The video can be playable before hydration, so check readyState as well as listening.
   useEffect(() => {
@@ -29,13 +38,6 @@ export function Hero() {
     else el.addEventListener("canplay", mark, { once: true });
     return () => el.removeEventListener("canplay", mark);
   }, []);
-
-  // Once the video has faded in, unmount the WebGL fallback so it stops rendering.
-  useEffect(() => {
-    if (!videoReady) return;
-    const id = window.setTimeout(() => setCanvasOn(false), 1800);
-    return () => window.clearTimeout(id);
-  }, [videoReady]);
 
   useGSAP(
     () => {
@@ -68,7 +70,7 @@ export function Hero() {
         0.75
       ).fromTo(".hero-card", { x: 40, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 1.2 }, 1.05);
 
-      // Scroll-away: copy drifts up and fades while the vapor pushes in.
+      // Scroll-away: copy drifts up and fades while the video pushes in.
       gsap.to(".hero-content", {
         yPercent: -18,
         autoAlpha: 0.15,
@@ -85,33 +87,34 @@ export function Hero() {
   );
 
   return (
-    <section ref={root} className="relative isolate flex min-h-[100dvh] overflow-hidden" aria-labelledby="hero-title">
+    <section ref={root} className="dark relative isolate flex min-h-[100dvh] overflow-hidden bg-background text-foreground" aria-labelledby="hero-title">
       <div className="hero-media invisible absolute inset-0 -z-10" data-reveal>
         <div className="hero-media-inner absolute inset-0">
-          {/* Footage is white smoke on black: inverted in light mode it reads as grey smoke on white. */}
-          <div className="absolute inset-0 [filter:invert(1)_hue-rotate(180deg)] dark:[filter:none]">
-          {canvasOn && <VaporCanvas />}
-          {HERO_VIDEO && (
-            <video
-              ref={video}
-              className={cn(
-                "absolute inset-0 size-full object-cover transition-opacity duration-[1500ms]",
-                videoReady ? "opacity-100" : "opacity-0"
-              )}
-              src={HERO_VIDEO}
-              poster={HERO_POSTER}
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              aria-hidden
-            />
-          )}
-          </div>
+          <picture>
+            <source media={PHONE} srcSet={phoneStill} />
+            <source media="(min-width: 768px)" srcSet={desktopStill} />
+            <img {...stillProps} alt="" className="absolute inset-0 size-full object-cover" />
+          </picture>
+          {/* Hidden for people who ask for less motion: they see the still. */}
+          <video
+            ref={video}
+            className={cn(
+              "absolute inset-0 size-full object-cover transition-opacity duration-[1500ms] motion-reduce:hidden",
+              videoReady ? "opacity-100" : "opacity-0"
+            )}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            aria-hidden
+          >
+            <source media={PHONE} src={HERO_VIDEO.phone} type="video/mp4" />
+            <source src={HERO_VIDEO.desktop} type="video/mp4" />
+          </video>
           <div className="absolute inset-0 bg-[radial-gradient(55%_65%_at_82%_78%,oklch(0.9_0.175_123/14%),transparent_70%)]" />
         </div>
-        {/* Mobile: even scrim behind centred copy. Desktop: fade from the left-aligned copy into the smoke. */}
+        {/* Mobile: even scrim behind centred copy. Desktop: fade from the left-aligned copy into the video. */}
         <div className="absolute inset-0 bg-background/45 lg:bg-transparent lg:bg-[linear-gradient(90deg,var(--background)_0%,color-mix(in_oklch,var(--background)_55%,transparent)_42%,transparent_75%)]" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
       </div>

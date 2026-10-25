@@ -56,10 +56,9 @@ export function NewsletterPopup({ open, onOpenChange }: { open: boolean; onOpenC
             contentRef.current?.focus();
           }}
           className={cn(
-            "fixed inset-x-0 bottom-0 z-[var(--z-overlay)] max-h-[100dvh] overflow-y-auto rounded-t-[22px] border border-b-0 border-border bg-surface text-foreground shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] outline-none",
-            "duration-300 data-open:animate-in data-open:slide-in-from-bottom-10 data-open:fade-in-0 data-closed:animate-out data-closed:slide-out-to-bottom-10 data-closed:fade-out-0",
-            "sm:inset-x-auto sm:top-1/2 sm:bottom-auto sm:left-1/2 sm:w-[560px] sm:max-w-[calc(100%-2rem)] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:overflow-hidden sm:rounded-[22px] sm:border-b",
-            "sm:data-open:slide-in-from-bottom-0 sm:data-open:zoom-in-95 sm:data-closed:slide-out-to-bottom-0 sm:data-closed:zoom-out-95",
+            // A centred card on every screen size.
+            "fixed top-1/2 left-1/2 z-[var(--z-overlay)] max-h-[calc(100dvh-2rem)] w-[560px] max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-[22px] border border-border bg-surface text-foreground shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] outline-none sm:overflow-hidden",
+            "duration-300 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
             !done && "sm:grid sm:grid-cols-[210px_1fr]"
           )}
         >
