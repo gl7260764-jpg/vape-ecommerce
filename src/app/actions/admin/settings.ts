@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/db";
 import { requireAdmin } from "@/lib/admin/auth";
 import { fail, ok, toActionError, type ActionResult } from "@/lib/admin/result";
-import { refreshNewsletter, refreshShipping } from "@/lib/admin/revalidate";
+import { refreshNewsletter, refreshShipping, refreshStoreProfile } from "@/lib/admin/revalidate";
 import { shippingSettingsSchema, type ShippingMethodInput } from "@/lib/admin/schemas/shipping";
 import { alertSettingsSchema, type AlertSettingsInput } from "@/lib/admin/schemas/alerts";
 import { businessSchema, type BusinessInput } from "@/lib/admin/schemas/business";
@@ -48,7 +48,10 @@ export async function saveShippingMethods(input: ShippingMethodInput[]): Promise
   }
 }
 
-/** The store's email, phone, address and ABN for invoices sent from now on. Invoices already sent keep theirs. */
+/**
+ * The store's email, phone, address and ABN for invoices sent from now on (invoices already sent keep theirs).
+ * The address and ABN also show on the About page.
+ */
 export async function saveBusinessDetails(input: BusinessInput): Promise<ActionResult> {
   try {
     await requireAdmin("settings:write");
@@ -59,6 +62,7 @@ export async function saveBusinessDetails(input: BusinessInput): Promise<ActionR
       return fail("Some fields need attention.", errors);
     }
     await saveStoreProfile(parsed.data);
+    refreshStoreProfile();
     return ok(null);
   } catch (error) {
     return toActionError(error);

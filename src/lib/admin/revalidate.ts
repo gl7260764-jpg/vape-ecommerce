@@ -31,3 +31,8 @@ export function refreshShipping() {
 export function refreshNewsletter() {
   expire(["newsletter"]);
 }
+
+/** The business details (ABN, address) shown on the About page. */
+export function refreshStoreProfile() {
+  expire(["store-profile"]);
+}

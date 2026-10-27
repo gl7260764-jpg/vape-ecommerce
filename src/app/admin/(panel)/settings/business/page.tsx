@@ -27,7 +27,7 @@ async function Business() {
 export default function BusinessSettingsPage() {
   return (
     <>
-      <PageHeader eyebrow="Settings" title="Business details" description="Your details at the top of every invoice. Leave a field blank to leave it off." />
+      <PageHeader eyebrow="Settings" title="Business details" description="Your details at the top of every invoice. Your address and ABN also show on the store's About page. Leave a field blank to leave it off." />
       <Suspense fallback={<EditorSkeleton />}>
         <Business />
       </Suspense>
