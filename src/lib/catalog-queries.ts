@@ -1,7 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { prisma } from "@/lib/db";
-import { mediaUrl, type Category, type Product } from "@/lib/catalog";
+import { mediaUrl, storedSlug, type Category, type Product } from "@/lib/catalog";
 import { PAGE_SIZE, PRICE_BANDS, type Filters, type Sort } from "@/lib/filters";
 import { cleanDescription } from "@/lib/sanitize";
 import type { FlavourFamily, Prisma, ProductType } from "@/generated/prisma/client";
@@ -318,8 +318,9 @@ export async function getBrands() {
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 }
 
-export async function getProduct(slug: string) {
+export async function getProduct(address: string) {
   "use cache";
+  const slug = storedSlug(address); // the page gets "16″-…"; WooCommerce stored "16%e2%80%b3-…"
   cacheTag("catalog", `product:${slug}`);
   cacheLife("hours");
 

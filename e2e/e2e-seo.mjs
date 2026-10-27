@@ -35,11 +35,14 @@ check("no address is listed twice", new Set(urls).size === urls.length, urls.len
 check("every address has a last-changed date", (xml.match(/<lastmod>/g) ?? []).length === urls.length, `${(xml.match(/<lastmod>/g) ?? []).length} of ${urls.length}`);
 
 // A sample of what's listed actually loads (no redirects, no 404s).
-const sample = [...new Set(["/", "/shop", "/categories", "/brands", "/contact", ...products.slice(0, 4), ...categories.slice(0, 3), ...brands.slice(0, 3)])];
+// The first products by address are the ones imported with an encoded inch mark (16″ as "16%e2%80%b3").
+const sample = [...new Set(["/", "/shop", "/categories", "/brands", "/contact", ...products.slice(0, 4), ...products.slice(-2), ...categories.slice(0, 3), ...brands.slice(0, 3)])];
 const broken = [];
 for (const p of sample) {
   const res = await fetch(base + p, { redirect: "manual" });
-  if (res.status !== 200) broken.push(`${p} ${res.status}`);
+  // A missing page can still answer 200 (streamed "not found"): it carries a noindex tag.
+  const noindex = res.status === 200 && /<meta name="robots" content="noindex"/.test(await res.text());
+  if (res.status !== 200 || noindex) broken.push(`${p} ${noindex ? "not found (noindex)" : res.status}`);
 }
 check("the listed pages load", sample.length > 10 && broken.length === 0, broken.join(" | ") || `${sample.length} checked`);
 

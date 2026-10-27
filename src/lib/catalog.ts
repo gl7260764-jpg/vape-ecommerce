@@ -28,6 +28,18 @@ export type Category = {
 /** Public URL for an object in the Neon assets bucket (served by app/media/[...key]). */
 export const mediaUrl = (key: string) => `/media/${key}`;
 
+/**
+ * The stored form of a product slug. Slugs imported from WooCommerce keep its encoding ("16%e2%80%b3-…"
+ * for 16″), while a page receives the address decoded and links may use either case of escape.
+ */
+export function storedSlug(slug: string): string {
+  try {
+    return encodeURIComponent(decodeURIComponent(slug)).replace(/%[0-9A-F]{2}/g, (escape) => escape.toLowerCase());
+  } catch {
+    return slug; // a stray % that isn't an escape
+  }
+}
+
 export const formatPrice = (value: number) =>
   new Intl.NumberFormat("en-AU", { style: "currency", currency: "AUD" }).format(value);
 

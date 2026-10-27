@@ -10,7 +10,7 @@ import { BuyBox } from "@/components/product/buy-box";
 import { SpecTiles } from "@/components/product/spec-tiles";
 import { ProductCard } from "@/components/site/product-card";
 import { allProductSlugs, getProduct, type ProductDetail } from "@/lib/catalog-queries";
-import { productMeta } from "@/lib/catalog";
+import { productMeta, storedSlug } from "@/lib/catalog";
 import { SITE_URL as SITE } from "@/lib/site";
 
 type Props = PageProps<"/product/[slug]">;
@@ -22,7 +22,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const slug = storedSlug((await params).slug);
   const p = await getProduct(slug);
   if (!p) return {};
   return {
@@ -54,7 +54,7 @@ function productJsonLd(p: ProductDetail, slug: string) {
 }
 
 async function ProductView({ params }: Pick<Props, "params">) {
-  const { slug } = await params;
+  const slug = storedSlug((await params).slug);
   const p = await getProduct(slug);
   if (!p) notFound();
 
