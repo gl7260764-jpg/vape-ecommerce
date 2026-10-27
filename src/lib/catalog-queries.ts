@@ -391,6 +391,20 @@ export const allProductSlugs = () => prisma.product.findMany({ where: live, sele
 export const allCategorySlugs = () => prisma.category.findMany({ where: { isVisible: true }, select: { slug: true } });
 export const allBrandSlugs = () => prisma.brand.findMany({ where: { products: { some: live } }, select: { slug: true } });
 
+/** Every public product, category and brand page with when it last changed, for sitemap.xml. */
+export async function sitemapCatalog() {
+  "use cache";
+  cacheTag("catalog");
+  cacheLife("hours");
+  const select = { slug: true, updatedAt: true } as const;
+  const [products, categories, brands] = await Promise.all([
+    prisma.product.findMany({ where: live, select, orderBy: { slug: "asc" } }),
+    prisma.category.findMany({ where: { isVisible: true }, select, orderBy: { slug: "asc" } }),
+    prisma.brand.findMany({ where: { products: { some: live } }, select, orderBy: { slug: "asc" } }),
+  ]);
+  return { products, categories, brands };
+}
+
 // ---------------------------------------------------------------------------
 // Search
 // ---------------------------------------------------------------------------

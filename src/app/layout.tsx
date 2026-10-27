@@ -33,6 +33,8 @@ export const metadata: Metadata = {
   // Added to an iPhone or iPad home screen: the app's name, and a dark status bar that keeps its own
   // space (a translucent one would sit on top of the navbar).
   appleWebApp: { capable: true, title: "Best Vape", statusBarStyle: "black" },
+  // Google Search Console (URL prefix property, HTML tag method). Removing it un-verifies the site.
+  verification: { google: "FIpkve3vW-lPFJSxHkyWP9AwwXS8Ga1hMbqEV2kCq28" },
 };
 
 export const viewport: Viewport = {
