@@ -1,12 +1,15 @@
 import type { NextConfig } from "next";
+import merged from "./prisma/data/catalog/merged-products.json";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
-  // Old store URLs that map onto the new shop.
+  // Old store URLs that map onto the new shop, and duplicate products merged into one
+  // (old address -> kept address, see scripts/catalog/merge-duplicates.mts).
   async redirects() {
     return [
       { source: "/budget-friendly", destination: "/shop?price=under-25", permanent: true },
       { source: "/product-category/uncategorized", destination: "/shop", permanent: true },
+      ...Object.entries(merged).map(([from, to]) => ({ source: `/product/${from}`, destination: `/product/${to}`, permanent: true })),
     ];
   },
   // The service worker must never be cached, or a fixed one would take a day to reach people.
