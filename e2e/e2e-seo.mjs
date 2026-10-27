@@ -50,5 +50,15 @@ check("the listed pages load", sample.length > 10 && broken.length === 0, broken
 const home = await (await fetch(`${base}/`)).text();
 check("the home page carries Google's verification tag", /<meta name="google-site-verification" content="FIpkve3vW-lPFJSxHkyWP9AwwXS8Ga1hMbqEV2kCq28"\/?>/.test(home), home.match(/<meta name="google-site-verification"[^>]*>/)?.[0] ?? "no tag");
 
+// Product photos load straight from /media (Vercel's paid image optimiser answers 402 once the plan's quota is used).
+const shopHtml = await (await fetch(`${base}/shop`)).text();
+const srcs = [...new Set([...shopHtml.matchAll(/<img[^>]*?\ssrc="([^"]+)"/g)].map((m) => m[1].replaceAll("&amp;", "&")))].slice(0, 8);
+const imgFails = [];
+for (const src of srcs) {
+  const res = await fetch(new URL(src, base));
+  if (res.status !== 200 || !/^image\//.test(res.headers.get("content-type") ?? "")) imgFails.push(`${src.slice(0, 80)} ${res.status}`);
+}
+check("product photos load without the image optimiser", srcs.length > 4 && srcs.every((s) => !s.startsWith("/_next/image")) && imgFails.length === 0, imgFails.join(" | ") || srcs.slice(0, 2).join(" "));
+
 for (const r of report) console.log(`${r.ok ? "PASS" : "FAIL"}  ${r.check}${r.ok ? "" : `  -> ${r.detail}`}`);
 console.log(`\n${report.filter((r) => r.ok).length}/${report.length} passed`);
