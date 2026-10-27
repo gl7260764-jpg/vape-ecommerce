@@ -3,12 +3,13 @@ import { ListingHero } from "@/components/store/listing-hero";
 import { CollectionTile } from "@/components/store/collection-tile";
 import { Reveal } from "@/components/motion/reveal";
 import { getCategories } from "@/lib/catalog-queries";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "All categories",
-  description: "Browse disposables, e-liquids, pouches, accessories and every IGET, HQD, Alibarbar and Geek Bar range we stock.",
-  alternates: { canonical: "/categories" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "All Vape Categories",
+  description: "Browse disposables, e-liquids, pouches, accessories and every IGET, HQD, Alibarbar and Geek Bar range we stock, delivered tracked across Australia.",
+  path: "/categories",
+});
 
 type Item = Awaited<ReturnType<typeof getCategories>>["types"][number];
 

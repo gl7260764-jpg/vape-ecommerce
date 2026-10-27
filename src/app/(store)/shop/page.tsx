@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ListingHero } from "@/components/store/listing-hero";
 import { Listing, ListingFallback } from "@/components/store/listing";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Shop all vapes",
-  description: "Every disposable vape, e-liquid, nicotine pouch and accessory we stock, with filters for brand, flavour and price.",
-  alternates: { canonical: "/shop" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "Shop All Vapes Online",
+  description: "Every disposable vape, e-liquid, pod kit, nicotine pouch and accessory we stock, with filters for brand, flavour and price. Tracked delivery Australia-wide.",
+  path: "/shop",
+});
 
 const QUICK_LINKS = [
   { label: "Disposables", href: "/shop?type=disposable" },

@@ -3,6 +3,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { Archivo, Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { OPEN_GRAPH, TITLE_SUFFIX } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -26,8 +27,10 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: "Best Vape Shop Australia | Disposable Vapes, Bulk Buys",
-    template: "%s | Best Vape Shop Australia",
+    template: `%s${TITLE_SUFFIX}`,
   },
+  // Pages that set their own titles also set full Open Graph tags (src/lib/seo.ts pageMetadata).
+  openGraph: OPEN_GRAPH,
   description:
     "Shop IGET, Alibarbar, HQD and more. Genuine disposable vapes with bulk-buy pricing and Australia-wide shipping. Adults 18+ only.",
   // Added to an iPhone or iPad home screen: the app's name, and a dark status bar that keeps its own

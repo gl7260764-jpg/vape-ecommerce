@@ -3,12 +3,13 @@ import { ListingHero } from "@/components/store/listing-hero";
 import { CollectionTile } from "@/components/store/collection-tile";
 import { Reveal } from "@/components/motion/reveal";
 import { getBrands } from "@/lib/catalog-queries";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "All brands",
-  description: "IGET, HQD, Alibarbar, Geek Bar and every other brand we stock, in one place.",
-  alternates: { canonical: "/brands" },
-};
+export const metadata: Metadata = pageMetadata({
+  title: "All Vape Brands",
+  description: "IGET, HQD, Alibarbar, Geek Bar and every other vape brand we stock in Australia, in one place, with tracked delivery to every state and territory.",
+  path: "/brands",
+});
 
 export default async function BrandsPage() {
   const brands = await getBrands();

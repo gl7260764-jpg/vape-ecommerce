@@ -11,6 +11,7 @@ import { SpecTiles } from "@/components/product/spec-tiles";
 import { ProductCard } from "@/components/site/product-card";
 import { allProductSlugs, getProduct, type ProductDetail } from "@/lib/catalog-queries";
 import { productMeta, storedSlug } from "@/lib/catalog";
+import { pageMetadata, productDescription, productTitle, type ProductSeoInput } from "@/lib/seo";
 import { SITE_URL as SITE } from "@/lib/site";
 
 type Props = PageProps<"/product/[slug]">;
@@ -25,12 +26,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = storedSlug((await params).slug);
   const p = await getProduct(slug);
   if (!p) return {};
-  return {
-    title: p.metaTitle ?? p.name,
-    description: p.metaDescription ?? p.shortDescription ?? undefined,
-    alternates: { canonical: `/product/${slug}` },
-    openGraph: p.images[0] ? { images: [p.images[0].src] } : undefined,
+  const seo: ProductSeoInput = {
+    ...p.specs,
+    name: p.name,
+    type: p.type,
+    price: p.card.price,
+    brand: p.brand,
+    primary: p.primary,
+    shortDescription: p.shortDescription,
+    metaTitle: p.metaTitle,
+    metaDescription: p.metaDescription,
   };
+  return pageMetadata({
+    title: { absolute: productTitle(seo) },
+    description: productDescription(seo) ?? undefined,
+    path: `/product/${slug}`,
+    image: p.images[0]?.src,
+  });
 }
 
 function productJsonLd(p: ProductDetail, slug: string) {

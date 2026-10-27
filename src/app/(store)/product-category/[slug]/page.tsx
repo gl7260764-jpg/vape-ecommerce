@@ -5,6 +5,7 @@ import { ListingHero } from "@/components/store/listing-hero";
 import { Listing, ListingFallback } from "@/components/store/listing";
 import { RichText } from "@/components/store/rich-text";
 import { allCategorySlugs, getCategory } from "@/lib/catalog-queries";
+import { categorySeo, pageMetadata } from "@/lib/seo";
 
 type Props = PageProps<"/product-category/[slug]">;
 
@@ -16,12 +17,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const c = await getCategory(slug);
   if (!c) return {};
-  return {
-    title: c.metaTitle ?? c.name,
-    description: c.metaDescription ?? c.tagline ?? undefined,
-    alternates: { canonical: `/product-category/${slug}` },
-    openGraph: c.image ? { images: [c.image] } : undefined,
-  };
+  const { title, description } = categorySeo({ ...c, brandSlug: c.brand?.slug ?? null });
+  return pageMetadata({ title, description, path: `/product-category/${slug}`, image: c.image });
 }
 
 async function CategoryHero({ params }: Pick<Props, "params">) {

@@ -165,7 +165,7 @@ export type AdminProductRow = Awaited<ReturnType<typeof listAdminProducts>>["row
 export async function productEditorOptions() {
   await requireAdmin();
   const [brands, categories] = await Promise.all([
-    prisma.brand.findMany({ orderBy: { name: "asc" }, select: { id: true, name: true } }),
+    prisma.brand.findMany({ orderBy: { name: "asc" }, select: { id: true, slug: true, name: true } }),
     prisma.category.findMany({
       orderBy: [{ kind: "asc" }, { name: "asc" }],
       select: { id: true, name: true, kind: true, parent: { select: { name: true } } },

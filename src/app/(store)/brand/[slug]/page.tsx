@@ -5,6 +5,7 @@ import { ListingHero } from "@/components/store/listing-hero";
 import { Listing, ListingFallback } from "@/components/store/listing";
 import { allBrandSlugs, getBrand } from "@/lib/catalog-queries";
 import { mediaUrl } from "@/lib/catalog";
+import { brandSeo, pageMetadata } from "@/lib/seo";
 
 type Props = PageProps<"/brand/[slug]">;
 
@@ -16,11 +17,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const b = await getBrand(slug);
   if (!b) return {};
-  return {
-    title: `${b.name} vapes and accessories`,
-    description: `Shop ${b.count} ${b.name} products, with filters for type, flavour and price.`,
-    alternates: { canonical: `/brand/${slug}` },
-  };
+  const { title, description } = brandSeo({ ...b, ranges: b.categories.filter((c) => c.kind === "series").map((c) => c.name) });
+  return pageMetadata({ title, description, path: `/brand/${slug}`, image: b.image ? mediaUrl(b.image) : null });
 }
 
 async function BrandHero({ params }: Pick<Props, "params">) {

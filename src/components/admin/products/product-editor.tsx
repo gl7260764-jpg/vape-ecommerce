@@ -26,6 +26,7 @@ import {
 } from "@/lib/admin/schemas/product";
 import { slugify } from "@/lib/admin/slug";
 import { cn } from "@/lib/utils";
+import { productDescription, productTitle, type ProductSeoInput } from "@/lib/seo";
 import { SITE_HOST } from "@/lib/site";
 
 type FormState = {
@@ -289,8 +290,27 @@ export function ProductEditor({ product, options, canDelete }: { product?: Admin
   const showPuffs = ["disposable", "pod_kit", "bundle", "other"].includes(type);
   const showVolume = ["e_liquid", "other", "bundle"].includes(type);
   const showNicotine = ["disposable", "e_liquid", "pod_kit", "nicotine_pouch", "bundle", "other"].includes(type);
-  const seoTitle = state.metaTitle || state.name || "Product name";
-  const seoDescription = state.metaDescription || state.shortDescription || "A short description of the product appears here in Google.";
+  // The same title and description the product page will carry (src/lib/seo.ts).
+  const num = (s: string) => (s.trim() === "" ? null : Number(s));
+  const brand = options.brands.find((b) => b.id === state.brandId);
+  const primary = options.categories.find((c) => c.id === state.primaryCategoryId);
+  const seo: ProductSeoInput = {
+    name: state.name || "Product name",
+    type: state.type,
+    price: Number(state.price) || 0,
+    brand: brand ? { slug: brand.slug, name: brand.name } : null,
+    primary: primary ? { name: primary.name, kind: primary.kind } : null,
+    puffs: num(state.puffs),
+    volumeMl: num(state.volumeMl),
+    nicotineMg: num(state.nicotineMg),
+    packSize: Number(state.packSize) || 1,
+    flavour: state.flavour || null,
+    shortDescription: state.shortDescription || null,
+    metaTitle: state.metaTitle || null,
+    metaDescription: state.metaDescription || null,
+  };
+  const seoTitle = productTitle(seo);
+  const seoDescription = productDescription(seo) ?? "A short description of the product appears here in Google.";
 
   return (
     <form ref={formRef} onSubmit={onSubmit} noValidate className="mt-8">
@@ -430,11 +450,11 @@ export function ProductEditor({ product, options, canDelete }: { product?: Admin
           </Card>
 
           <Card>
-            <CardHeader title="Search engine listing" description="Leave blank to use the name and short description." />
+            <CardHeader title="Search engine listing" description="Leave blank to use a title and description written from the product's details." />
             <div className="grid gap-5 p-5">
               <div className="rounded-xl border border-border bg-background/60 p-4">
                 <p className="truncate text-xs text-muted-foreground">{SITE_HOST} › product › {state.slug || "..."}</p>
-                <p className="mt-1 line-clamp-1 text-base text-sky-700 dark:text-sky-300">{seoTitle} | Best Vape Shop Australia</p>
+                <p className="mt-1 line-clamp-1 text-base text-sky-700 dark:text-sky-300">{seoTitle}</p>
                 <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{seoDescription}</p>
               </div>
               <Field id="metaTitle" label="Page title" optional error={err("metaTitle")} hint={`${state.metaTitle.length}/60 characters recommended`}>

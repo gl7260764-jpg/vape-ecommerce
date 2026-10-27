@@ -3,13 +3,14 @@ import { ChatsCircleIcon, EnvelopeSimpleIcon, PhoneIcon } from "@phosphor-icons/
 import { ContactChatButton } from "@/components/store/contact-chat-button";
 import { EnquiryForm } from "@/components/store/enquiry-form";
 import { ListingHero } from "@/components/store/listing-hero";
+import { pageMetadata } from "@/lib/seo";
 import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_DISPLAY } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Contact us",
   description: `Questions about an order, a product or a bulk buy? Email ${CONTACT_EMAIL}, call ${CONTACT_PHONE_DISPLAY} or chat with us.`,
-  alternates: { canonical: "/contact" },
-};
+  path: "/contact",
+});
 
 const CARD = "flex flex-col rounded-[var(--radius-tile)] border border-border bg-surface p-6 sm:p-7";
 const ICON = "grid size-11 place-items-center rounded-full bg-primary/15 text-primary-ink";

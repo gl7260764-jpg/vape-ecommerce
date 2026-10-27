@@ -223,12 +223,13 @@ export async function getCategory(slug: string) {
     },
   });
   if (!c || !c.isVisible) return null;
-  const count = await prisma.product.count({ where: scopeWhere({ category: slug }) });
+  const { _count: count, _min } = await prisma.product.aggregate({ where: scopeWhere({ category: slug }), _count: true, _min: { priceCents: true } });
   return {
     ...c,
     image: c.imageKey ? mediaUrl(c.imageKey) : null,
     description: cleanDescription(c.description),
     count,
+    fromPrice: _min.priceCents === null ? null : _min.priceCents / 100,
   };
 }
 
@@ -250,7 +251,7 @@ export async function getBrand(slug: string) {
     },
   });
   if (!b) return null;
-  const count = await prisma.product.count({ where: scopeWhere({ brand: slug }) });
+  const { _count: count, _min } = await prisma.product.aggregate({ where: scopeWhere({ brand: slug }), _count: true, _min: { priceCents: true } });
   if (!count) return null;
   const cover = await prisma.productImage.findFirst({
     where: { key: { not: null }, product: { ...live, brand: { slug } } },
@@ -260,6 +261,7 @@ export async function getBrand(slug: string) {
   return {
     ...b,
     count,
+    fromPrice: _min.priceCents === null ? null : _min.priceCents / 100,
     image: b.categories.find((c) => c.imageKey)?.imageKey ?? cover?.key ?? null,
     categories: b.categories.map((c) => ({ ...c, image: c.imageKey ? mediaUrl(c.imageKey) : null })),
   };

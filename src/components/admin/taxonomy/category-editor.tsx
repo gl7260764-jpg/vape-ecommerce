@@ -193,7 +193,7 @@ export function CategoryEditor({ category, options, canDelete }: { category?: Ad
           </Card>
 
           <Card>
-            <CardHeader title="Search engine listing" description="Leave blank to use the name and tagline." />
+            <CardHeader title="Search engine listing" description="Leave blank to use a title and description written from the name, tagline, product count and lowest price." />
             <div className="grid gap-5 p-5">
               <Field id="metaTitle" label="Page title" optional error={err("metaTitle")} hint={`${state.metaTitle.length}/60 characters recommended`}>
                 <input id="metaTitle" value={state.metaTitle} onChange={text("metaTitle")} placeholder={state.name} className={CONTROL} />
