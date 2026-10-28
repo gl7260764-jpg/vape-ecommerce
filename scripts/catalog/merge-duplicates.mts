@@ -1,7 +1,7 @@
 // One-off clean-up (27 Oct 2026): the WooCommerce import brought in the same product up to five times
 // ("…-vape", "…-vape-2" … "-5", unnamed "product-13" copies), which gave 334 products a title another
 // product also had. For each set of copies this keeps one, archives the rest (reversible in the admin; order
-// history stays) and records old address -> kept address in prisma/data/catalog/merged-products.json, which
+// history stays) and records old address -> kept address in prisma/data/catalog/product-redirects.json, which
 // next.config.ts turns into 301 redirects. The kept copy takes over every category the copies were in.
 // Where copies disagreed on price, PRICES below says which one to keep (the price closest to what Australian
 // stores charged when checked; the most common or lower one where no store listed it).
@@ -14,7 +14,7 @@ import { prisma } from "@/lib/db";
 import { productTitle, TITLE_SUFFIX } from "@/lib/seo";
 
 const apply = process.argv.includes("--apply");
-const RECORD = path.join(process.cwd(), "prisma", "data", "catalog", "merged-products.json");
+const RECORD = path.join(process.cwd(), "prisma", "data", "catalog", "product-redirects.json");
 
 // Different products the import gave one name, because it lost the flavour: their original store titles.
 const RENAME: Record<string, { name: string; flavour: string }> = {

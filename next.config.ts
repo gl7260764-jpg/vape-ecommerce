@@ -1,17 +1,17 @@
 import type { NextConfig } from "next";
-import merged from "./prisma/data/catalog/merged-products.json";
+import productRedirects from "./prisma/data/catalog/product-redirects.json";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
-  // Old store URLs that map onto the new shop, and duplicate products merged into one
-  // (old address -> kept address, see scripts/catalog/merge-duplicates.mts).
+  // Old store URLs that map onto the new shop, and old product addresses -> current ones (duplicates merged
+  // into one and messy slugs cleaned up: scripts/catalog/merge-duplicates.mts and clean-slugs.mts).
   async redirects() {
     return [
       // One address for the whole site: www goes to the bare domain.
       { source: "/:path*", has: [{ type: "host", value: "www.vapesupplieraustralia.com" }], destination: "https://vapesupplieraustralia.com/:path*", permanent: true },
       { source: "/budget-friendly", destination: "/shop?price=under-25", permanent: true },
       { source: "/product-category/uncategorized", destination: "/shop", permanent: true },
-      ...Object.entries(merged).map(([from, to]) => ({ source: `/product/${from}`, destination: `/product/${to}`, permanent: true })),
+      ...Object.entries(productRedirects).map(([from, to]) => ({ source: `/product/${from}`, destination: `/product/${to}`, permanent: true })),
     ];
   },
   // The service worker must never be cached, or a fixed one would take a day to reach people.
