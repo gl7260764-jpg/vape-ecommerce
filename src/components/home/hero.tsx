@@ -125,7 +125,8 @@ export function Hero() {
           className="hero-title invisible font-display text-[clamp(2.1rem,7.2vw,6.75rem)] leading-[0.95] font-extrabold tracking-[-0.035em] uppercase"
           data-reveal
         >
-          Big clouds.
+          {/* The space keeps the words apart in the page text ("clouds. Better"); the break does the layout. */}
+          Big clouds.{" "}
           <br />
           <span className="text-primary-ink">Better prices.</span>
         </h1>

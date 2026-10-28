@@ -14,6 +14,7 @@ async function head(path) {
   const meta = (attr, name) => [...html.matchAll(new RegExp(`<meta ${attr}="${name}" content="([^"]*)"`, "g"))].map((m) => decode(m[1]));
   return {
     path,
+    h1s: [...html.matchAll(/<h1[^>]*>(.*?)<\/h1>/gs)].map((m) => decode(m[1].replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim())),
     titles: [...html.matchAll(/<title>([^<]*)<\/title>/g)].map((m) => decode(m[1])),
     description: meta("name", "description")[0] ?? "",
     canonical: html.match(/<link rel="canonical" href="([^"]*)"/)?.[1],
@@ -37,6 +38,8 @@ check("every page's canonical is its own address", bad((p) => p.canonical !== SI
 check("every page has one og:title and its own og:url", bad((p) => p.og.title.length !== 1 || !p.og.url).length === 0, bad((p) => p.og.title.length !== 1 || !p.og.url).join(" "));
 check("Open Graph says en_AU and the store's name", bad((p) => p.og.locale !== "en_AU" || p.og.site !== "Best Vape Shop Australia").length === 0, bad((p) => p.og.locale !== "en_AU").join(" "));
 check("no two pages share a title", new Set(pages.map((p) => p.titles[0])).size === pages.length, pages.length - new Set(pages.map((p) => p.titles[0])).size);
+check("every page has exactly one h1", bad((p) => p.h1s.length !== 1).length === 0, pages.filter((p) => p.h1s.length !== 1).map((p) => `${p.path} (${p.h1s.length})`).join(" "));
+check("the home page h1 reads as words", pages.find((p) => p.path === "/")?.h1s[0] === "Big clouds. Better prices.", pages.find((p) => p.path === "/")?.h1s[0]);
 
 // Aimed at Australia (everything but the products awaiting review, which keep what they had).
 const reviewed = (p) => /muha|ace-|cbd|cbg|3000mg/i.test(p.path);

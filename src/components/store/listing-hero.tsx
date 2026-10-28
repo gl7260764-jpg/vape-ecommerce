@@ -19,39 +19,44 @@ type Props = {
 
 /** Header for shop, category and brand listings: title, tagline, count, image tile and sub-range pills. */
 export function ListingHero({ crumbs, title, tagline, count, image, links, kicker, hideOnMobile }: Props) {
+  // With hideOnMobile, phones get only the h1, visually hidden: one h1 for every screen size.
+  const desktopOnly = hideOnMobile ? "max-lg:hidden" : undefined;
   return (
-    <>
-    {hideOnMobile && <h1 className="sr-only lg:hidden">{title}</h1>}
-    <section className={cn("relative isolate overflow-hidden border-b border-border", hideOnMobile && "hidden lg:block")}>
+    <section className={cn("relative isolate overflow-hidden", hideOnMobile ? "lg:border-b lg:border-border" : "border-b border-border")}>
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-40 right-[-10%] -z-10 size-[34rem] rounded-full bg-primary/10 blur-[120px]"
+        className={cn("pointer-events-none absolute -top-40 right-[-10%] -z-10 size-[34rem] rounded-full bg-primary/10 blur-[120px]", desktopOnly)}
       />
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-4 pt-28 pb-12 sm:px-6 md:pt-32 md:pb-16 lg:grid-cols-12 lg:px-10">
+      <div
+        className={cn(
+          "mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:px-10",
+          hideOnMobile ? "lg:pt-32 lg:pb-16" : "pt-28 pb-12 md:pt-32 md:pb-16"
+        )}
+      >
         <div className={cn("flex flex-col", image ? "lg:col-span-8" : "lg:col-span-10")}>
-          <Breadcrumbs items={crumbs} />
+          <Breadcrumbs items={crumbs} className={desktopOnly} />
           {kicker && (
-            <Link href={kicker.href} className="mt-8 w-fit text-sm font-medium text-primary-ink hover:underline">
+            <Link href={kicker.href} className={cn("mt-8 w-fit text-sm font-medium text-primary-ink hover:underline", desktopOnly)}>
               {kicker.label}
             </Link>
           )}
-          {/* With hideOnMobile, the sr-only h1 above serves phones; this one serves desktop. */}
           <h1
             className={cn(
               "font-display text-[clamp(2.25rem,6vw,4.75rem)] leading-[0.92] font-extrabold tracking-[-0.03em] uppercase",
-              kicker ? "mt-3" : "mt-8"
+              kicker ? "mt-3" : "mt-8",
+              hideOnMobile && "max-lg:sr-only"
             )}
           >
             {title}
           </h1>
-          {tagline && <p className="mt-5 max-w-[52ch] text-lg leading-relaxed text-muted-foreground">{tagline}</p>}
+          {tagline && <p className={cn("mt-5 max-w-[52ch] text-lg leading-relaxed text-muted-foreground", desktopOnly)}>{tagline}</p>}
           {count !== undefined && (
-            <p className="mt-5 font-mono text-sm text-muted-foreground">
+            <p className={cn("mt-5 font-mono text-sm text-muted-foreground", desktopOnly)}>
               {count.toLocaleString("en-AU")} {count === 1 ? "product" : "products"}
             </p>
           )}
           {links && links.length > 0 && (
-            <ul className="mt-8 flex flex-wrap gap-2">
+            <ul className={cn("mt-8 flex flex-wrap gap-2", desktopOnly)}>
               {links.map((l) => (
                 <li key={l.href}>
                   <Link
@@ -74,6 +79,5 @@ export function ListingHero({ crumbs, title, tagline, count, image, links, kicke
         )}
       </div>
     </section>
-    </>
   );
 }
