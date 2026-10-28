@@ -18,9 +18,9 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/sw.js", headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate" }] }];
   },
-  // Images load as they are: product photos are already small WebP files from /media (cached for a
-  // year), and Vercel's image optimiser is billed per image, so on the free plan it stopped serving them.
-  images: { unoptimized: true },
+  // Vercel's image optimiser is billed per image, so on the free plan it stopped serving them. Catalog photos
+  // are resized by our own /media route instead (src/lib/image-loader.ts); /public files load as they are.
+  images: { loader: "custom", loaderFile: "./src/lib/image-loader.ts" },
   partialPrefetching: true,
   experimental: {
     // ~1,600 pages prerender in parallel against Neon; retry a page on a transient DB error instead of failing the build.

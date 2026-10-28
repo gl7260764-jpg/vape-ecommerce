@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ArrowDownRightIcon, ArrowUpRightIcon } from "@phosphor-icons/react";
 import { useDarkHero } from "@/components/site/dark-hero";
-import { gsap, SplitText, useGSAP } from "@/lib/gsap";
+import { gsap, useGSAP } from "@/lib/gsap";
 import { cn } from "@/lib/utils";
 
 // Stock loop: "Man vaping indoors with dark background" (Pexels 38917906, Pexels License, free for
@@ -50,25 +50,15 @@ export function Hero() {
         return;
       }
 
+      // The headline, line and buttons are visible in the server HTML and don't animate in: on a phone the
+      // reveal held them back until the JavaScript ran, and they are what Google times as the page loading (LCP).
       const tl = gsap.timeline({ delay: 0.15 });
-      tl.fromTo(".hero-media", { scale: 1.12, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 2.2 }, 0);
-
-      SplitText.create(".hero-title", {
-        type: "lines,words",
-        mask: "lines",
-        autoSplit: true,
-        onSplit(self) {
-          gsap.set(".hero-title", { autoAlpha: 1 });
-          return tl.from(self.words, { yPercent: 110, duration: 1.3, stagger: 0.07 }, 0.25);
-        },
-      });
-
-      tl.fromTo(
-        ".hero-sub, .hero-ctas",
-        { y: 24, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 1.1, stagger: 0.12 },
-        0.75
-      ).fromTo(".hero-card", { x: 40, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 1.2 }, 1.05);
+      tl.fromTo(".hero-media", { scale: 1.12, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 2.2 }, 0).fromTo(
+        ".hero-card",
+        { x: 40, autoAlpha: 0 },
+        { x: 0, autoAlpha: 1, duration: 1.2 },
+        1.05
+      );
 
       // Scroll-away: copy drifts up and fades while the video pushes in.
       gsap.to(".hero-content", {
@@ -119,11 +109,11 @@ export function Hero() {
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-background to-transparent" />
       </div>
 
-      <div className="hero-content mx-auto flex w-full max-w-[1400px] flex-col justify-center px-4 pt-28 pb-14 text-center sm:px-6 md:pb-20 lg:justify-end lg:px-10 lg:pt-24 lg:text-left">
+      {/* lg:pb-32 keeps Shop now clear of the app card that sits bottom-left on desktop. */}
+      <div className="hero-content mx-auto flex w-full max-w-[1400px] flex-col justify-center px-4 pt-28 pb-14 text-center sm:px-6 md:pb-20 lg:justify-end lg:px-10 lg:pt-24 lg:pb-32 lg:text-left">
         <h1
           id="hero-title"
-          className="hero-title invisible font-display text-[clamp(2.1rem,7.2vw,6.75rem)] leading-[0.95] font-extrabold tracking-[-0.035em] uppercase"
-          data-reveal
+          className="hero-title font-display text-[clamp(2.1rem,7.2vw,6.75rem)] leading-[0.95] font-extrabold tracking-[-0.035em] uppercase"
         >
           {/* The space keeps the words apart in the page text ("clouds. Better"); the break does the layout. */}
           Big clouds.{" "}
@@ -132,13 +122,10 @@ export function Hero() {
         </h1>
         <div className="mt-2 grid grid-cols-1 items-end gap-10 lg:grid-cols-12">
         <div className="lg:col-span-7">
-          <p
-            className="hero-sub invisible mx-auto mt-7 max-w-[34ch] text-lg leading-relaxed text-foreground/75 md:text-xl lg:mx-0"
-            data-reveal
-          >
+          <p className="hero-sub mx-auto mt-7 max-w-[34ch] text-lg leading-relaxed text-foreground/75 md:text-xl lg:mx-0">
             Genuine IGET, Alibarbar and HQD disposables at bulk-buy prices, shipped Australia-wide.
           </p>
-          <div className="hero-ctas invisible mt-9 flex flex-wrap items-center justify-center gap-3 lg:justify-start" data-reveal>
+          <div className="hero-ctas mt-9 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
             <Link
               href="/shop"
               className="group inline-flex h-14 items-center gap-3 rounded-full bg-primary pr-2 pl-7 text-base font-semibold text-primary-foreground transition-transform active:scale-[0.98]"

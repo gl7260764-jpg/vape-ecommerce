@@ -138,13 +138,14 @@ async function ProductView({ params }: Pick<Props, "params">) {
       {p.related.length > 0 && p.primary && (
         <section aria-labelledby="related-title" className="border-t border-border bg-surface">
           <div className="mx-auto max-w-[1400px] px-4 py-16 sm:px-6 md:py-20 lg:px-10">
-            <div className="flex items-end justify-between gap-6">
+            <div className="flex flex-wrap items-end justify-between gap-6">
               <h2 id="related-title" className="font-display text-3xl leading-[0.95] font-extrabold tracking-[-0.03em] uppercase lg:text-4xl">
                 More from {p.primary.name}
               </h2>
+              {/* Shown on phones too: the link up to the whole range is what ties flavours together. */}
               <Link
                 href={`/product-category/${p.primary.slug}`}
-                className="group hidden h-11 shrink-0 items-center gap-2 rounded-full border border-foreground/20 pr-2 pl-5 text-sm font-medium transition-colors hover:border-primary sm:inline-flex"
+                className="group inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-foreground/20 pr-2 pl-5 text-sm font-medium transition-colors hover:border-primary"
               >
                 View all
                 <span className="grid size-7 place-items-center rounded-full bg-foreground text-background transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
