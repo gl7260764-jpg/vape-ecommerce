@@ -20,17 +20,13 @@ const columns = [
     links: [
       { label: "Your account", href: "/account" },
       { label: "Shipping", href: "/shipping" },
-      { label: "Returns", href: "/returns" },
       { label: "Contact", href: "/contact" },
     ],
   },
   {
     title: "Company",
-    links: [
-      { label: "About us", href: "/about-us" },
-      { label: "Services", href: "/services" },
-      { label: "News", href: "/blog" },
-    ],
+    // Returns, Services and News come back once they have pages (the old store's links went nowhere).
+    links: [{ label: "About us", href: "/about-us" }],
   },
 ];
 

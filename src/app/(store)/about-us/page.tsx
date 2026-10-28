@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Perks } from "@/components/home/perks";
 import { ListingHero } from "@/components/store/listing-hero";
-import { pageMetadata } from "@/lib/seo";
+import { jsonLd, onlineStoreJsonLd, pageMetadata } from "@/lib/seo";
 import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_DISPLAY, SITE_HOST, SITE_URL } from "@/lib/site";
 import { getPublicBusinessDetails } from "@/lib/store-profile";
 
@@ -26,20 +26,7 @@ export default async function AboutPage() {
     { label: "Email", value: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
     { label: "Phone", value: CONTACT_PHONE_DISPLAY, href: `tel:${CONTACT_PHONE}` },
   ];
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "AboutPage",
-    url: `${SITE_URL}/about-us`,
-    mainEntity: {
-      "@type": "OnlineStore",
-      name: "Best Vape Shop Australia",
-      url: SITE_URL,
-      email: CONTACT_EMAIL,
-      telephone: CONTACT_PHONE,
-      ...(abn ? { taxID: abn } : {}),
-      ...(address ? { address } : {}),
-    },
-  };
+  const data = { "@context": "https://schema.org", "@type": "AboutPage", url: `${SITE_URL}/about-us`, mainEntity: onlineStoreJsonLd({ abn, address }) };
 
   return (
     <>
@@ -104,8 +91,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* "<" escaped so an address can't close the script tag. */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(data) }} />
     </>
   );
 }

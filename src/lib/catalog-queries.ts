@@ -403,7 +403,9 @@ export async function sitemapCatalog() {
   const [products, categories, brands] = await Promise.all([
     prisma.product.findMany({ where: live, select, orderBy: { slug: "asc" } }),
     prisma.category.findMany({ where: { isVisible: true }, select, orderBy: { slug: "asc" } }),
-    prisma.brand.findMany({ where: { products: { some: live } }, select, orderBy: { slug: "asc" } }),
+    // A brand with its own brand category (Alibarbar, Geek Bar) is listed by that category instead: the brand
+    // page points its canonical there (brand/[slug]/page.tsx).
+    prisma.brand.findMany({ where: { products: { some: live }, categories: { none: { kind: "brand", isVisible: true } } }, select, orderBy: { slug: "asc" } }),
   ]);
   return { products, categories, brands };
 }

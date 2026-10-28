@@ -54,7 +54,9 @@ export type NewsletterSettingsValues = {
   installOffersEnabled: boolean;
 };
 
-export const NEWSLETTER_DEFAULTS: NewsletterSettingsValues = { popupEnabled: true, firstDelaySeconds: 8, repeatEverySeconds: 10, maxShows: null, installOffersEnabled: true };
+// Once a day and at most twice: a pop-up that comes back every few seconds counts against the page in Google
+// (intrusive interstitials) and annoys shoppers.
+export const NEWSLETTER_DEFAULTS: NewsletterSettingsValues = { popupEnabled: true, firstDelaySeconds: 8, repeatEverySeconds: 86_400, maxShows: 2, installOffersEnabled: true };
 
 /** The pop-up's settings for every store page. Cached; saving them expires the "newsletter" tag. */
 export async function getNewsletterSettings(): Promise<NewsletterSettingsValues> {

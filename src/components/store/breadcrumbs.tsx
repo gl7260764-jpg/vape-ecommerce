@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { CaretRightIcon } from "@phosphor-icons/react/dist/ssr";
+import { jsonLd } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 export type Crumb = { label: string; href?: string };
@@ -7,10 +9,11 @@ export type Crumb = { label: string; href?: string };
 /** Visible trail plus BreadcrumbList structured data for search results. */
 export function Breadcrumbs({ items, className }: { items: Crumb[]; className?: string }) {
   const trail = [{ label: "Home", href: "/" }, ...items];
-  const jsonLd = {
+  // Google wants full addresses in breadcrumb data, not "/shop".
+  const data = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: trail.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c.label, ...(c.href ? { item: c.href } : {}) })),
+    itemListElement: trail.map((c, i) => ({ "@type": "ListItem", position: i + 1, name: c.label, ...(c.href ? { item: `${SITE_URL}${c.href}` } : {}) })),
   };
   return (
     <nav aria-label="Breadcrumb" className={cn("text-sm text-muted-foreground", className)}>
@@ -30,7 +33,7 @@ export function Breadcrumbs({ items, className }: { items: Crumb[]; className?: 
           </li>
         ))}
       </ol>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(data) }} />
     </nav>
   );
 }

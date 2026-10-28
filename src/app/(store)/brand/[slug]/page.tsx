@@ -18,7 +18,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const b = await getBrand(slug);
   if (!b) return {};
   const { title, description } = brandSeo({ ...b, ranges: b.categories.filter((c) => c.kind === "series").map((c) => c.name) });
-  return pageMetadata({ title, description, path: `/brand/${slug}`, image: b.image ? mediaUrl(b.image) : null });
+  // Brands with their own brand category (/product-category/alibarbar) list the same products there, so
+  // search engines are pointed at that page, which also carries the store's copy.
+  const home = b.categories.find((c) => c.kind === "brand");
+  return pageMetadata({ title, description, path: home ? `/product-category/${home.slug}` : `/brand/${slug}`, image: b.image ? mediaUrl(b.image) : null });
 }
 
 async function BrandHero({ params }: Pick<Props, "params">) {

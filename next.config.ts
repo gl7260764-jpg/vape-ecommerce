@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   // (old address -> kept address, see scripts/catalog/merge-duplicates.mts).
   async redirects() {
     return [
+      // One address for the whole site: www goes to the bare domain.
+      { source: "/:path*", has: [{ type: "host", value: "www.vapesupplieraustralia.com" }], destination: "https://vapesupplieraustralia.com/:path*", permanent: true },
       { source: "/budget-friendly", destination: "/shop?price=under-25", permanent: true },
       { source: "/product-category/uncategorized", destination: "/shop", permanent: true },
       ...Object.entries(merged).map(([from, to]) => ({ source: `/product/${from}`, destination: `/product/${to}`, permanent: true })),

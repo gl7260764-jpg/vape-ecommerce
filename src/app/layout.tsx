@@ -31,6 +31,7 @@ export const metadata: Metadata = {
   },
   // Pages that set their own titles also set full Open Graph tags (src/lib/seo.ts pageMetadata).
   openGraph: OPEN_GRAPH,
+  twitter: { card: "summary_large_image" },
   description:
     "Shop IGET, Alibarbar, HQD and more. Genuine disposable vapes with bulk-buy pricing and Australia-wide shipping. Adults 18+ only.",
   // Added to an iPhone or iPad home screen: the app's name, and a dark status bar that keeps its own

@@ -8,7 +8,9 @@ import { HqdGrid } from "@/components/home/hqd-grid";
 import { Reviews } from "@/components/home/reviews";
 import { Faq } from "@/components/home/faq";
 import { getHomeCatalog } from "@/lib/catalog-queries";
-import { pageMetadata } from "@/lib/seo";
+import { jsonLd, onlineStoreJsonLd, pageMetadata, SITE_NAME } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
+import { getPublicBusinessDetails } from "@/lib/store-profile";
 
 // The capital cities are where most Australians searching for a vape shop are; delivery reaches them all.
 export const metadata = pageMetadata({
@@ -22,10 +24,16 @@ export const metadata = pageMetadata({
 // disposables promo, trust badges, product grid, then brand copy and footer.
 // Catalog data comes from Neon Postgres (cached, tag "catalog").
 export default async function Home() {
-  const catalog = await getHomeCatalog();
+  const [catalog, business] = await Promise.all([getHomeCatalog(), getPublicBusinessDetails()]);
+  // Who runs the site, for Google's knowledge panel and AI answers.
+  const data = {
+    "@context": "https://schema.org",
+    "@graph": [onlineStoreJsonLd(business), { "@type": "WebSite", name: SITE_NAME, url: SITE_URL, inLanguage: "en-AU", publisher: { "@id": `${SITE_URL}/#store` } }],
+  };
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(data) }} />
       <Hero />
       <FlavourMarquee names={catalog.flavourNames} />
       <Categories categories={catalog.categories} />

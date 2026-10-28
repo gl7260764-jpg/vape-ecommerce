@@ -18,7 +18,9 @@ async function head(path) {
     titles: [...html.matchAll(/<title>([^<]*)<\/title>/g)].map((m) => decode(m[1])),
     description: meta("name", "description")[0] ?? "",
     canonical: html.match(/<link rel="canonical" href="([^"]*)"/)?.[1],
-    og: { title: meta("property", "og:title"), url: meta("property", "og:url")[0], locale: meta("property", "og:locale")[0], site: meta("property", "og:site_name")[0] },
+    og: { title: meta("property", "og:title"), url: meta("property", "og:url")[0], locale: meta("property", "og:locale")[0], site: meta("property", "og:site_name")[0], image: meta("property", "og:image")[0] },
+    jsonLd: [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].map((m) => JSON.parse(m[1])),
+    footer: [...(html.match(/<nav aria-label="Footer"[\s\S]*?<\/nav>/)?.[0] ?? "").matchAll(/href="(\/[^"]*)"/g)].map((m) => m[1]),
   };
 }
 
@@ -36,6 +38,18 @@ check("every page has exactly one title", bad((p) => p.titles.length !== 1 || !p
 check("every page has a meta description", bad((p) => p.description.length < 20).length === 0, bad((p) => p.description.length < 20).join(" "));
 check("every page's canonical is its own address", bad((p) => p.canonical !== SITE + (p.path === "/" ? "" : p.path) && p.canonical !== `${SITE}/`).length === 0, bad((p) => !p.canonical?.endsWith(p.path)).join(" "));
 check("every page has one og:title and its own og:url", bad((p) => p.og.title.length !== 1 || !p.og.url).length === 0, bad((p) => p.og.title.length !== 1 || !p.og.url).join(" "));
+check("every page has a link-preview image", bad((p) => !p.og.image).length === 0, bad((p) => !p.og.image).join(" "));
+const crumbs = pages.flatMap((p) => p.jsonLd.filter((d) => d["@type"] === "BreadcrumbList").flatMap((d) => d.itemListElement));
+check("breadcrumb data uses full addresses", crumbs.length > 0 && crumbs.every((c) => !c.item || c.item.startsWith(SITE)), crumbs.find((c) => c.item && !c.item.startsWith(SITE))?.item);
+const homeGraph = pages.find((p) => p.path === "/")?.jsonLd.flatMap((d) => d["@graph"] ?? [d]).map((d) => d["@type"]) ?? [];
+check("the home page says who runs the store", homeGraph.includes("OnlineStore") && homeGraph.includes("WebSite"), homeGraph.join(" "));
+const footerLinks = [...new Set(pages[0].footer)];
+const deadFooter = [];
+for (const href of footerLinks) {
+  const res = await fetch(base + href, { redirect: "manual" });
+  if (res.status >= 400) deadFooter.push(`${href} ${res.status}`);
+}
+check("every footer link works", footerLinks.length > 5 && deadFooter.length === 0, deadFooter.join(" | ") || footerLinks.join(" "));
 check("Open Graph says en_AU and the store's name", bad((p) => p.og.locale !== "en_AU" || p.og.site !== "Best Vape Shop Australia").length === 0, bad((p) => p.og.locale !== "en_AU").join(" "));
 check("no two pages share a title", new Set(pages.map((p) => p.titles[0])).size === pages.length, pages.length - new Set(pages.map((p) => p.titles[0])).size);
 check("every page has exactly one h1", bad((p) => p.h1s.length !== 1).length === 0, pages.filter((p) => p.h1s.length !== 1).map((p) => `${p.path} (${p.h1s.length})`).join(" "));

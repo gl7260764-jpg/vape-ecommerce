@@ -11,7 +11,7 @@ import { SpecTiles } from "@/components/product/spec-tiles";
 import { ProductCard } from "@/components/site/product-card";
 import { allProductSlugs, getProduct, type ProductDetail } from "@/lib/catalog-queries";
 import { productMeta, storedSlug } from "@/lib/catalog";
-import { pageMetadata, productDescription, productTitle, type ProductSeoInput } from "@/lib/seo";
+import { jsonLd, pageMetadata, productDescription, productTitle, type ProductSeoInput } from "@/lib/seo";
 import { SITE_URL as SITE } from "@/lib/site";
 
 type Props = PageProps<"/product/[slug]">;
@@ -164,7 +164,7 @@ async function ProductView({ params }: Pick<Props, "params">) {
         </section>
       )}
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd(p, slug)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(productJsonLd(p, slug)) }} />
     </>
   );
 }

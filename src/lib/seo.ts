@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { formatPrice } from "@/lib/catalog";
+import { CONTACT_EMAIL, CONTACT_PHONE, SITE_URL } from "@/lib/site";
 import type { CategoryKind, ProductType } from "@/generated/prisma/client";
 
 // Titles and descriptions for store pages, written for people searching from Australia ("iget bar australia",
@@ -9,8 +10,31 @@ import type { CategoryKind, ProductType } from "@/generated/prisma/client";
 export const SITE_NAME = "Best Vape Shop Australia";
 /** What the root layout's title template adds to every page that doesn't set an absolute title. */
 export const TITLE_SUFFIX = ` | ${SITE_NAME}`;
+/** The link-preview picture for pages without a photo of their own (made by scripts/app/og-image.mjs). */
+export const OG_IMAGE = { url: "/og.jpg", width: 1200, height: 630, alt: "Best Vape Shop Australia: big clouds, better prices" };
 /** Open Graph tags every page shares. The layout sets these for pages that don't call pageMetadata. */
-export const OPEN_GRAPH = { siteName: SITE_NAME, locale: "en_AU", type: "website" } as const;
+export const OPEN_GRAPH = { siteName: SITE_NAME, locale: "en_AU", type: "website", images: OG_IMAGE } as const;
+
+/** JSON-LD for a <script> tag, with "<" escaped so text from the database can't close the tag. */
+export const jsonLd = (data: object) => JSON.stringify(data).replace(/</g, "\\u003c");
+
+/** The store as an organisation, for the home and About pages. The ABN and address show once set in the admin. */
+export function onlineStoreJsonLd({ abn, address }: { abn: string | null; address: string | null }) {
+  return {
+    "@type": "OnlineStore",
+    "@id": `${SITE_URL}/#store`,
+    name: SITE_NAME,
+    url: SITE_URL,
+    logo: `${SITE_URL}/icons/icon-512.png`,
+    image: `${SITE_URL}${OG_IMAGE.url}`,
+    email: CONTACT_EMAIL,
+    telephone: CONTACT_PHONE,
+    areaServed: { "@type": "Country", name: "Australia" },
+    currenciesAccepted: "AUD",
+    ...(abn ? { taxID: abn } : {}),
+    ...(address ? { address } : {}),
+  };
+}
 
 const MAX_TITLE = 60; // about as much as Google shows before cutting a title off
 const DELIVERY = "Tracked delivery Australia-wide.";
@@ -28,7 +52,7 @@ export function pageMetadata({ title, description, path, image }: { title: strin
     title,
     description,
     alternates: { canonical: path },
-    openGraph: { ...OPEN_GRAPH, title: typeof title === "string" ? title : title.absolute, description, url: path, ...(image ? { images: [image] } : {}) },
+    openGraph: { ...OPEN_GRAPH, title: typeof title === "string" ? title : title.absolute, description, url: path, images: image ?? OG_IMAGE },
   };
 }
 
