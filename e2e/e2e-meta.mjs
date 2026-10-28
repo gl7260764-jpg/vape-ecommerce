@@ -58,7 +58,8 @@ check("the home page h1 reads as words", pages.find((p) => p.path === "/")?.h1s[
 // Aimed at Australia (everything but the products awaiting review, which keep what they had).
 const reviewed = (p) => /muha|ace-|cbd|cbg|3000mg/i.test(p.path);
 const local = pages.filter((p) => !reviewed(p));
-const echoes = local.filter((p) => p.description.toLowerCase().startsWith(p.titles[0].split(" | ")[0].toLowerCase()));
+// A page that failed to load has no title: "every page has exactly one title" reports it, so skip it here.
+const echoes = local.filter((p) => p.titles[0] && p.description.toLowerCase().startsWith(p.titles[0].split(" | ")[0].toLowerCase()));
 check("descriptions don't open by repeating the title", echoes.length === 0, echoes.map((p) => p.path).join(" "));
 check("titles and descriptions mention Australia", local.every((p) => /australia/i.test(p.titles[0] + p.description)), local.filter((p) => !/australia/i.test(p.titles[0] + p.description)).map((p) => p.path).join(" "));
 const home = pages.find((p) => p.path === "/");
