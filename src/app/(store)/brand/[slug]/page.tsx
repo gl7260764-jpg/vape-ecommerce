@@ -46,18 +46,11 @@ async function BrandListing({ params, searchParams }: Pick<Props, "params" | "se
   return <Listing scope={{ brand: slug }} searchParams={searchParams} basePath={`/brand/${slug}`} />;
 }
 
+// The hero (with the h1) prerenders in place, as on category pages; the grid waits for the URL's filters.
 export default function BrandPage({ params, searchParams }: Props) {
   return (
     <>
-      <Suspense
-        fallback={
-          <section className="border-b border-border">
-            <div className="mx-auto h-[22rem] max-w-[1400px] animate-pulse px-4 pt-28 sm:px-6 lg:px-10" />
-          </section>
-        }
-      >
-        <BrandHero params={params} />
-      </Suspense>
+      <BrandHero params={params} />
       <Suspense fallback={<ListingFallback />}>
         <BrandListing params={params} searchParams={searchParams} />
       </Suspense>

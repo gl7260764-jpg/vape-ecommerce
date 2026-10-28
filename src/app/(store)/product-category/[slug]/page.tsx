@@ -68,30 +68,16 @@ async function CategoryAbout({ params }: Pick<Props, "params">) {
   );
 }
 
-function HeroFallback() {
-  return (
-    <section className="border-b border-border">
-      <div className="mx-auto max-w-[1400px] px-4 pt-28 pb-12 sm:px-6 md:pt-32 md:pb-16 lg:px-10">
-        <div className="h-4 w-48 animate-pulse rounded bg-surface-2" />
-        <div className="mt-8 h-14 w-2/3 animate-pulse rounded-lg bg-surface-2" />
-        <div className="mt-5 h-5 w-1/2 animate-pulse rounded bg-surface-2" />
-      </div>
-    </section>
-  );
-}
-
+// The hero (with the h1) and the store's copy prerender in place: every slug comes from generateStaticParams
+// and the data is cached. Only the product grid waits for the request, because filters and sort live in the URL.
 export default function CategoryPage({ params, searchParams }: Props) {
   return (
     <>
-      <Suspense fallback={<HeroFallback />}>
-        <CategoryHero params={params} />
-      </Suspense>
+      <CategoryHero params={params} />
       <Suspense fallback={<ListingFallback />}>
         <CategoryListing params={params} searchParams={searchParams} />
       </Suspense>
-      <Suspense>
-        <CategoryAbout params={params} />
-      </Suspense>
+      <CategoryAbout params={params} />
     </>
   );
 }

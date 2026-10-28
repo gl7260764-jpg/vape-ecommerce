@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
 import { ArrowRightIcon, SealCheckIcon, TruckIcon } from "@phosphor-icons/react/dist/ssr";
 import { Breadcrumbs } from "@/components/store/breadcrumbs";
 import { RichText } from "@/components/store/rich-text";
@@ -169,25 +168,9 @@ async function ProductView({ params }: Pick<Props, "params">) {
   );
 }
 
-function ProductFallback() {
-  return (
-    <section className="mx-auto max-w-[1400px] px-4 pt-28 pb-16 sm:px-6 md:pt-32 lg:px-10">
-      <div className="h-4 w-56 animate-pulse rounded bg-surface-2" />
-      <div className="mt-8 grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-14">
-        <div className="aspect-square animate-pulse rounded-[var(--radius-tile)] bg-surface-2 lg:col-span-7" />
-        <div className="space-y-4 lg:col-span-5">
-          <div className="h-12 w-4/5 animate-pulse rounded-lg bg-surface-2" />
-          <div className="h-40 animate-pulse rounded-[var(--radius-tile)] bg-surface-2" />
-        </div>
-      </div>
-    </section>
-  );
-}
-
+// No Suspense around the product: every slug comes from generateStaticParams and the data is cached, so the
+// whole product prerenders in place. Behind a boundary it was streamed in after the footer, which put the
+// footer's headings ahead of the h1 in the HTML search engines read.
 export default function ProductPage({ params }: Props) {
-  return (
-    <Suspense fallback={<ProductFallback />}>
-      <ProductView params={params} />
-    </Suspense>
-  );
+  return <ProductView params={params} />;
 }
