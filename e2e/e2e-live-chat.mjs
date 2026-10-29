@@ -190,7 +190,7 @@ await step("no pop-up over the open chat", async () => {
 
 await step("ordering still opens the chat with the invoice", async () => {
   const { ctx, p } = await device();
-  await p.goto(base + "/product/banana-ice-iget-bar-3500-puffs", { waitUntil: "load" });
+  await p.goto(base + "/product/iget-legend-vape", { waitUntil: "load" });
   for (let i = 0; i < 5; i++) {
     await p.getByRole("button", { name: "Add to cart" }).filter({ visible: true }).first().click();
     const added = await p.waitForFunction(() => (JSON.parse(localStorage.getItem("bvsa-cart") ?? "{}").state?.lines ?? []).length > 0, null, { timeout: 3000 }).catch(() => null);

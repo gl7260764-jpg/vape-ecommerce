@@ -3,6 +3,7 @@ import Link from "next/link";
 import { TruckIcon } from "@phosphor-icons/react/dist/ssr";
 import { ListingHero } from "@/components/store/listing-hero";
 import { formatPrice } from "@/lib/catalog";
+import { deliveryCents, FREE_DELIVERY_FROM_CENTS, MIN_ORDER_CENTS } from "@/lib/checkout";
 import { getShippingMethods } from "@/lib/checkout-queries";
 import { pageMetadata } from "@/lib/seo";
 
@@ -10,7 +11,7 @@ import { pageMetadata } from "@/lib/seo";
 // checkout charges (Admin > Settings > Shipping), so the page changes when they do.
 export const metadata: Metadata = pageMetadata({
   title: "Shipping",
-  description: "Delivery options and prices for orders across Australia, with tracking on every parcel to every state and territory.",
+  description: "Delivery options and prices across Australia: free regular shipping from $500, with tracking on every parcel to every state and territory.",
   path: "/shipping",
 });
 
@@ -18,6 +19,10 @@ const CARD = "flex flex-col rounded-[var(--radius-tile)] border border-border bg
 
 export default async function ShippingPage() {
   const methods = await getShippingMethods();
+  const optionCents = methods.map((m) => Math.round(m.price * 100));
+  const from = formatPrice(FREE_DELIVERY_FROM_CENTS / 100);
+  // What each option costs once the items reach $500 (checkout charges the same: lib/checkout.ts).
+  const fromPrice = (price: number) => deliveryCents(Math.round(price * 100), optionCents, FREE_DELIVERY_FROM_CENTS);
   return (
     <>
       <ListingHero crumbs={[{ label: "Shipping" }]} title="Shipping" tagline="Tracked delivery to every state and territory, priced at checkout by the option you pick." />
@@ -35,12 +40,18 @@ export default async function ShippingPage() {
                 <span className="font-mono text-base">{formatPrice(m.price)}</span>
               </h3>
               {m.description && <p className="mt-1 text-sm text-muted-foreground">{m.description}</p>}
+              <p className="mt-3 text-sm font-medium text-primary-ink">
+                {fromPrice(m.price) ? `${formatPrice(fromPrice(m.price) / 100)} on orders from ${from}` : `Free on orders from ${from}`}
+              </p>
             </li>
           ))}
         </ul>
 
         <div className="mt-14 max-w-[62ch] space-y-5 text-lg leading-relaxed text-foreground/85">
-          <p>The delivery price is added once per order, whatever its size, so a bulk box ships for the same price as a single bar.</p>
+          <p>
+            Orders start at {formatPrice(MIN_ORDER_CENTS / 100)}. The delivery price is added once per order, whatever its size, and from {from} regular
+            shipping is free and express costs less (prices above).
+          </p>
           <p>
             Questions about a delivery? <Link href="/contact" className="font-medium text-primary-ink underline-offset-4 hover:underline">Contact us</Link> with
             your order number (it starts with BV-) and we&apos;ll look it up.

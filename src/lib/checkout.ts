@@ -1,5 +1,6 @@
 // Checkout rules shared by the form (instant feedback) and the server action (the real check).
 import { z } from "zod";
+import { formatPrice } from "@/lib/catalog";
 
 export const AU_STATES = [
   { code: "NSW", name: "New South Wales" },
@@ -110,3 +111,20 @@ export function validateCheckout(input: Partial<CheckoutFormValues>) {
 export type CartLineInput = { id: string; quantity: number };
 
 export const orderNumber = (n: number) => `BV-${n}`;
+
+/** Orders start at $100 of items, before any discount. */
+export const MIN_ORDER_CENTS = 100_00;
+/** From $500 of items (before any discount) the cheapest delivery is free, and its price comes off the others. */
+export const FREE_DELIVERY_FROM_CENTS = 500_00;
+
+/** How much more the items must come to before the order can be placed (0 once they're enough). */
+export const shortOfMinimumCents = (subtotalCents: number) => Math.max(0, MIN_ORDER_CENTS - subtotalCents);
+/** For the cart, the checkout and the server's refusal alike. */
+export const minimumOrderMessage = (subtotalCents: number) =>
+  `Orders start at ${formatPrice(MIN_ORDER_CENTS / 100)}. Add ${formatPrice(shortOfMinimumCents(subtotalCents) / 100)} more to check out.`;
+
+/** What a delivery option costs for these items: its price, less the cheapest option's from $500 (Regular $0, Express $30). */
+export function deliveryCents(priceCents: number, optionPriceCents: number[], subtotalCents: number) {
+  if (subtotalCents < FREE_DELIVERY_FROM_CENTS) return priceCents;
+  return Math.max(0, priceCents - Math.min(priceCents, ...optionPriceCents));
+}

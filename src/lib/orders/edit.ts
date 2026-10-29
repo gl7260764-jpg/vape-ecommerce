@@ -1,6 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/db";
-import { normaliseAuPhone, validateCheckout } from "@/lib/checkout";
+import { deliveryCents, normaliseAuPhone, validateCheckout } from "@/lib/checkout";
 import { orderLinesSchema, type OrderLineInput, type OrderStatusInput } from "@/lib/admin/schemas/order";
 import { refreshInvoiceMessages } from "@/lib/chat/service";
 import { discountCents } from "@/lib/discount";
@@ -39,12 +39,15 @@ export async function updateOrder(orderId: string, input: OrderEditInput): Promi
   });
   if (!order) return { ok: false, error: "That order no longer exists." };
 
-  // Keeping the shipping option keeps what was charged; a different one takes today's price.
+  const subtotalCents = lines.data.reduce((sum, l) => sum + l.unitPriceCents * l.quantity, 0);
+  // Keeping the shipping option keeps what was charged; a different one takes today's price for these items
+  // (from $500 the cheapest is free and comes off the others, as at checkout).
   let shipping = { code: order.shippingCode, name: order.shippingName, priceCents: order.shippingCents };
   if (d.shipping !== order.shippingCode) {
-    const method = await prisma.shippingMethod.findFirst({ where: { code: d.shipping, isActive: true }, select: { code: true, name: true, priceCents: true } });
+    const methods = await prisma.shippingMethod.findMany({ where: { isActive: true }, select: { code: true, name: true, priceCents: true } });
+    const method = methods.find((m) => m.code === d.shipping);
     if (!method) return { ok: false, error: NEEDS_ATTENTION, fieldErrors: { shipping: "That shipping option isn't available. Choose another." } };
-    shipping = method;
+    shipping = { ...method, priceCents: deliveryCents(method.priceCents, methods.map((m) => m.priceCents), subtotalCents) };
   }
 
   const existing = new Set(order.items.map((i) => i.id));
@@ -65,7 +68,6 @@ export async function updateOrder(orderId: string, input: OrderEditInput): Promi
     return { ok: false, error: NEEDS_ATTENTION, fieldErrors: { [`items.${index}.productId`]: "Pick the product from the catalog." } };
   }
 
-  const subtotalCents = lines.data.reduce((sum, l) => sum + l.unitPriceCents * l.quantity, 0);
   // A newsletter order stays 10% off: of the new items total.
   const discount = discountCents(subtotalCents, order.discountPercent);
   await prisma.$transaction([

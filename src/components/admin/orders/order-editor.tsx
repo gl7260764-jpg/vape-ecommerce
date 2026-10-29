@@ -13,7 +13,7 @@ import type { OrderProductOption } from "@/lib/admin/queries/orders";
 import { ORDER_STATUSES } from "@/lib/admin/schemas/order";
 import { formatPrice } from "@/lib/catalog";
 import { DISCOUNT_LABEL, discountCents } from "@/lib/discount";
-import { AU_STATES, orderNumber, PAYMENT_METHODS } from "@/lib/checkout";
+import { AU_STATES, deliveryCents, orderNumber, PAYMENT_METHODS } from "@/lib/checkout";
 import type { OrderEditInput } from "@/lib/orders/edit";
 import type { OrderStatusValue } from "@/lib/invoices/types";
 import { cn } from "@/lib/utils";
@@ -122,8 +122,13 @@ export function OrderEditor({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [adding, setAdding] = useState(false);
 
-  const shippingCents = shippingCode === order.shippingCode ? order.shippingCents : (shippingOptions.find((s) => s.code === shippingCode)?.priceCents ?? 0);
   const subtotal = lines.reduce((sum, l) => sum + lineCents(l), 0);
+  // Keeping the option keeps what was charged; another one costs today's price for these items (free regular from $500).
+  const costOf = (code: string) =>
+    code === order.shippingCode
+      ? order.shippingCents
+      : deliveryCents(shippingOptions.find((s) => s.code === code)?.priceCents ?? 0, shippingOptions.map((s) => s.priceCents), subtotal);
+  const shippingCents = costOf(shippingCode);
   const discount = discountCents(subtotal, order.discountPercent);
   const total = subtotal - discount + shippingCents;
   const paidOrLater = order.status !== "pending_payment" && order.status !== "cancelled";
@@ -396,7 +401,7 @@ export function OrderEditor({
                 >
                   {options.map((s) => (
                     <option key={s.code} value={s.code}>
-                      {s.name} · {money(s.code === order.shippingCode ? order.shippingCents : s.priceCents)}
+                      {s.name} · {money(costOf(s.code))}
                     </option>
                   ))}
                 </Select>

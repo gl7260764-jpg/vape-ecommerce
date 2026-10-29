@@ -7,10 +7,14 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { Button } from "@/components/ui/button";
 import { cartCount, cartSubtotal, useCart } from "@/lib/cart-store";
 import { formatPrice, productMeta } from "@/lib/catalog";
+import { FREE_DELIVERY_FROM_CENTS, minimumOrderMessage, shortOfMinimumCents } from "@/lib/checkout";
 import { useLenisLock } from "@/hooks/use-lenis-lock";
 
 export function CartSheet() {
   const { lines, open, setOpen, setQuantity, remove } = useCart();
+  // The checkout and the server check the minimum and price delivery again from the database's prices.
+  const subtotalCents = Math.round(cartSubtotal(lines) * 100);
+  const belowMinimum = shortOfMinimumCents(subtotalCents) > 0;
   useLenisLock(open);
   const count = cartCount(lines);
 
@@ -100,17 +104,28 @@ export function CartSheet() {
             <div className="border-t border-border bg-background/40 px-6 py-5">
               <div className="flex items-baseline justify-between">
                 <span className="text-sm text-muted-foreground">Subtotal</span>
-                <span className="font-mono text-lg font-medium">{formatPrice(cartSubtotal(lines))}</span>
+                <span className="font-mono text-lg font-medium">{formatPrice(subtotalCents / 100)}</span>
               </div>
-              <p className="mt-1 text-xs text-muted-foreground">Shipping calculated at checkout.</p>
-              <Button
-                asChild
-                className="mt-5 h-12 w-full rounded-full text-base font-semibold active:scale-[0.98]"
-              >
-                <Link href="/checkout" onClick={() => setOpen(false)}>
+              {belowMinimum ? (
+                <p className="mt-1 text-sm font-medium">{minimumOrderMessage(subtotalCents)}</p>
+              ) : (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  {subtotalCents >= FREE_DELIVERY_FROM_CENTS
+                    ? "Free regular shipping on this order."
+                    : `Add ${formatPrice((FREE_DELIVERY_FROM_CENTS - subtotalCents) / 100)} more for free regular shipping.`}
+                </p>
+              )}
+              {belowMinimum ? (
+                <Button disabled className="mt-5 h-12 w-full rounded-full text-base font-semibold">
                   Checkout
-                </Link>
-              </Button>
+                </Button>
+              ) : (
+                <Button asChild className="mt-5 h-12 w-full rounded-full text-base font-semibold active:scale-[0.98]">
+                  <Link href="/checkout" onClick={() => setOpen(false)}>
+                    Checkout
+                  </Link>
+                </Button>
+              )}
             </div>
           </>
         )}

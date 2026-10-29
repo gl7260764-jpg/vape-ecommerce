@@ -7,7 +7,7 @@ import { SITE_URL } from "@/lib/site";
 
 const CONTACT_PAGE_CHANGED = new Date("2026-10-25");
 const ABOUT_PAGE_CHANGED = new Date("2026-10-27");
-const SHIPPING_PAGE_CHANGED = new Date("2026-10-28");
+const SHIPPING_PAGE_CHANGED = new Date("2026-10-29");
 
 type Entry = MetadataRoute.Sitemap[number];
 const page = (path: string, lastModified: Date, changeFrequency: Entry["changeFrequency"], priority: number): Entry => ({

@@ -4,7 +4,17 @@ import { randomBytes } from "node:crypto";
 import { after } from "next/server";
 import { prisma } from "@/lib/db";
 import { alertNewOrder } from "@/lib/alerts";
-import { normaliseAuPhone, orderNumber, validateCheckout, type CartLineInput, type CheckoutFormValues, type FieldErrors } from "@/lib/checkout";
+import {
+  deliveryCents,
+  minimumOrderMessage,
+  normaliseAuPhone,
+  orderNumber,
+  shortOfMinimumCents,
+  validateCheckout,
+  type CartLineInput,
+  type CheckoutFormValues,
+  type FieldErrors,
+} from "@/lib/checkout";
 import { priceLines, type PricedLine } from "@/lib/checkout-queries";
 import { currentVisit, existingVisitorId, recordServerEvent } from "@/lib/analytics/record";
 import { savedCheckoutDetails, type SavedCheckoutDetails } from "@/lib/checkout-details";
@@ -63,15 +73,19 @@ export async function placeOrder(input: { form: CheckoutFormValues; lines: CartL
   if (!checked.ok) return { ok: false, fieldErrors: checked.errors };
   const form = checked.data;
 
-  const [{ items, unavailable, subtotalCents }, shipping] = await Promise.all([
+  const [{ items, unavailable, subtotalCents }, methods] = await Promise.all([
     priceLines(Array.isArray(input.lines) ? input.lines : []),
-    prisma.shippingMethod.findFirst({ where: { code: form.shipping, isActive: true } }),
+    prisma.shippingMethod.findMany({ where: { isActive: true }, select: { code: true, name: true, priceCents: true } }),
   ]);
   if (unavailable.length) {
     return { ok: false, unavailable, error: "Some items in your cart are no longer available. Remove them and try again." };
   }
   if (!items.length) return { ok: false, error: "Your cart is empty." };
-  if (!shipping) return { ok: false, fieldErrors: { shipping: "That shipping option isn't available. Choose another." } };
+  if (shortOfMinimumCents(subtotalCents)) return { ok: false, error: minimumOrderMessage(subtotalCents) };
+  const method = methods.find((m) => m.code === form.shipping);
+  if (!method) return { ok: false, fieldErrors: { shipping: "That shipping option isn't available. Choose another." } };
+  // From $500 the cheapest delivery is free and comes off the others.
+  const shipping = { ...method, priceCents: deliveryCents(method.priceCents, methods.map((m) => m.priceCents), subtotalCents) };
 
   // The welcome discount, decided here; the customer is never charged a total they weren't shown.
   const welcome = await welcomeDiscountFor(form.email, await thisVisitor());

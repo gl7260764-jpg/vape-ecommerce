@@ -8,10 +8,14 @@ import { BankIcon, CaretDownIcon, CheckIcon, LightningIcon, LockSimpleIcon, Shop
 import { placeOrder, quoteCart, savedDetails, type Quote } from "@/app/actions/checkout";
 import {
   AU_STATES,
+  deliveryCents,
   formatAuPhone,
+  FREE_DELIVERY_FROM_CENTS,
+  minimumOrderMessage,
   normaliseAuPhone,
   PAYMENT_METHODS,
   paymentPhrase,
+  shortOfMinimumCents,
   validateCheckout,
   type CheckoutFormValues,
   type FieldErrors,
@@ -75,6 +79,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
+const priceOrFree = (cents: number) => (cents ? formatPrice(cents / 100) : "Free");
+
 /** Selectable card used for shipping and payment choices. */
 function Choice({
   name,
@@ -137,17 +143,20 @@ function Choice({
 function Summary({
   quote,
   shipping,
+  shippingCents,
   loading,
   onEditCart,
 }: {
   quote: Quote | null;
   shipping: ShippingOption | undefined;
+  /** What the chosen option costs for these items (free regular shipping from $500). */
+  shippingCents: number | null;
   loading: boolean;
   onEditCart: () => void;
 }) {
   const subtotal = (quote?.subtotalCents ?? 0) / 100;
   const discount = (quote?.discount?.cents ?? 0) / 100;
-  const total = subtotal - discount + (shipping?.price ?? 0);
+  const total = subtotal - discount + (shippingCents ?? 0) / 100;
   return (
     <div className="rounded-[var(--radius-tile)] border border-border bg-surface p-5 md:p-7">
       <div className="flex items-center justify-between">
@@ -208,7 +217,7 @@ function Summary({
         )}
         <div className="flex justify-between">
           <dt className="text-muted-foreground">{shipping?.name ?? "Shipping"}</dt>
-          <dd className="font-mono">{shipping ? formatPrice(shipping.price) : "-"}</dd>
+          <dd className="font-mono">{shippingCents === null ? "-" : priceOrFree(shippingCents)}</dd>
         </div>
         <div className="flex items-baseline justify-between border-t border-border pt-4">
           <dt className="font-medium">Total</dt>
@@ -323,9 +332,16 @@ export function CheckoutForm({ shippingMethods }: { shippingMethods: ShippingOpt
   };
 
   const describedBy = (id: keyof Values, hint?: boolean) => (errors[id] ? `${id}-error` : hint ? `${id}-hint` : undefined);
+  const subtotalCents = quote?.subtotalCents ?? 0;
+  // The server prices delivery the same way (actions/checkout.ts): from $500 the cheapest option is free.
+  const optionCents = shippingMethods.map((m) => Math.round(m.price * 100));
+  const costOf = (m: ShippingOption) => deliveryCents(Math.round(m.price * 100), optionCents, subtotalCents);
+  const cheapest = shippingMethods.reduce<ShippingOption | undefined>((a, m) => (!a || m.price < a.price ? m : a), undefined);
   const shipping = shippingMethods.find((m) => m.code === values.shipping);
-  const totalCents = (quote?.subtotalCents ?? 0) - (quote?.discount?.cents ?? 0) + Math.round((shipping?.price ?? 0) * 100);
+  const shippingCents = shipping ? costOf(shipping) : null;
+  const totalCents = subtotalCents - (quote?.discount?.cents ?? 0) + (shippingCents ?? 0);
   const total = totalCents / 100;
+  const belowMinimum = quote !== null && shortOfMinimumCents(subtotalCents) > 0;
 
   const focusFirstError = (errs: FieldErrors) => {
     const first = (Object.keys(values) as (keyof Values)[]).find((k) => errs[k]);
@@ -404,7 +420,7 @@ export function CheckoutForm({ shippingMethods }: { shippingMethods: ShippingOpt
           <span className="font-mono text-lg font-medium">{formatPrice(total)}</span>
         </summary>
         <div className="border-t border-border [&>div]:rounded-none [&>div]:border-0">
-          <Summary quote={quote} shipping={shipping} loading={quoting} onEditCart={() => openCart(true)} />
+          <Summary quote={quote} shipping={shipping} shippingCents={shippingCents} loading={quoting} onEditCart={() => openCart(true)} />
         </div>
       </details>
 
@@ -587,11 +603,18 @@ export function CheckoutForm({ shippingMethods }: { shippingMethods: ShippingOpt
                 icon={m.code === "express" ? <LightningIcon weight="fill" className="size-5" /> : <TruckIcon weight="fill" className="size-5" />}
                 title={m.name}
                 detail={m.description}
-                aside={formatPrice(m.price)}
+                aside={priceOrFree(costOf(m))}
               />
             ))}
           </div>
           {errors.shipping && <p className="mt-3 text-sm text-destructive">{errors.shipping}</p>}
+          {quote && cheapest && (
+            <p className="mt-3 text-sm text-muted-foreground">
+              {subtotalCents >= FREE_DELIVERY_FROM_CENTS
+                ? `Your order gets free ${cheapest.name.toLowerCase()}.`
+                : `Free ${cheapest.name.toLowerCase()} on orders from ${formatPrice(FREE_DELIVERY_FROM_CENTS / 100)}.`}
+            </p>
+          )}
         </Section>
 
         <Section title="Payment">
@@ -626,9 +649,16 @@ export function CheckoutForm({ shippingMethods }: { shippingMethods: ShippingOpt
           </p>
         )}
 
+        {belowMinimum && (
+          <p className="flex gap-2 rounded-2xl border border-border bg-surface-2/70 p-4 text-sm">
+            <WarningCircleIcon className="mt-0.5 size-4 shrink-0" aria-hidden />
+            {minimumOrderMessage(subtotalCents)}
+          </p>
+        )}
+
         <button
           type="submit"
-          disabled={pending || quoting || !quote?.items.length}
+          disabled={pending || quoting || !quote?.items.length || belowMinimum}
           className="inline-flex h-14 w-full items-center justify-center gap-3 rounded-full bg-primary px-6 text-base font-semibold text-primary-foreground transition-transform active:scale-[0.99] disabled:opacity-60"
         >
           {pending ? "Placing your order..." : `Place order · ${formatPrice(total)}`}
@@ -637,7 +667,7 @@ export function CheckoutForm({ shippingMethods }: { shippingMethods: ShippingOpt
 
       <aside className="hidden lg:col-span-5 lg:block">
         <div className="sticky top-28">
-          <Summary quote={quote} shipping={shipping} loading={quoting} onEditCart={() => openCart(true)} />
+          <Summary quote={quote} shipping={shipping} shippingCents={shippingCents} loading={quoting} onEditCart={() => openCart(true)} />
         </div>
       </aside>
     </form>
