@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ChatsCircleIcon } from "@phosphor-icons/react";
 import { answerInvoice, customerReceipts, deleteCustomerMessage, editCustomerMessage, reactCustomer, sendCustomerMessage } from "@/app/actions/chat";
 import { useChatUi } from "@/components/chat/chat-ui-store";
@@ -10,7 +10,9 @@ import { PresenceLine } from "@/components/chat/presence-line";
 import { getPusher, listen } from "@/components/chat/pusher-client";
 import { useChat, type ChatActions, type ChatMessage } from "@/components/chat/use-chat";
 import { NotifyBanner } from "@/components/chat/customer/notify-banner";
+import { NotifyCard } from "@/components/chat/customer/notify-card";
 import { channels, EVENTS } from "@/lib/chat/channels";
+import { notifyAfter } from "@/lib/invoices/rules";
 
 const ACTIONS: ChatActions = {
   send: sendCustomerMessage,
@@ -73,6 +75,8 @@ export function ChatPanel({ conversationId, email, live }: { conversationId: str
     setReplyTo(null);
     setEditing(null);
   }, []);
+  // Invoice confirmed, payment details on their way: the card under the thanks asks instead of the banner.
+  const notifyAt = useMemo(() => notifyAfter(chat.messages), [chat.messages]);
 
   return (
     <div data-connection={chat.connection} className="flex h-full min-h-0 flex-col bg-background">
@@ -93,7 +97,7 @@ export function ChatPanel({ conversationId, email, live }: { conversationId: str
       </header>
 
       {email && <p className="border-b border-border bg-surface/60 px-4 py-1.5 text-center text-xs text-muted-foreground">Chatting as {email}</p>}
-      <NotifyBanner />
+      {!notifyAt && <NotifyBanner />}
 
       {chat.status === "unavailable" ? (
         <div className="flex flex-1 flex-col items-center justify-center gap-3 px-8 text-center">
@@ -111,6 +115,7 @@ export function ChatPanel({ conversationId, email, live }: { conversationId: str
             onReply={onReply}
             onEdit={onEdit}
             onAnswered={onAnswered}
+            after={notifyAt ? { id: notifyAt, node: <NotifyCard /> } : null}
             empty={<p className="px-8 py-10 text-center text-sm text-muted-foreground">Say hello. We usually reply within 5 minutes.</p>}
           />
           <Composer chat={chat} replyTo={replyTo} editing={editing} onCancel={cancel} nameFor={nameFor} focusKey={focusKey} />

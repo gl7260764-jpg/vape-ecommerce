@@ -22,11 +22,13 @@ type Props = {
   /** After the customer answers an invoice question (the panel focuses the message box on "disputed"). */
   onAnswered?: (answer: "confirmed" | "disputed") => void;
   empty?: React.ReactNode;
+  /** Shown right after one message (the customer's notifications card, after the thanks for confirming an invoice). */
+  after?: { id: string; node: React.ReactNode } | null;
 };
 
 const fromOtherSide = (m: ChatMessage, viewer: ChatSide) => (viewer === "customer" ? m.sender !== "customer" : m.sender === "customer");
 
-export function MessageList({ chat, viewer, canModerate, nameFor, onReply, onEdit, onAnswered, empty }: Props) {
+export function MessageList({ chat, viewer, canModerate, nameFor, onReply, onEdit, onAnswered, empty, after }: Props) {
   const { messages, status, hasMore, loadOlder, react, retry, discard, remove, answerInvoice } = chat;
   const now = useNow();
   const scroller = useRef<HTMLDivElement>(null);
@@ -142,10 +144,13 @@ export function MessageList({ chat, viewer, canModerate, nameFor, onReply, onEdi
       onOpenImage: setViewing,
       onJumpTo: jumpTo,
       onAnswer: async (invoiceId: string, answer: "confirmed" | "disputed") => {
+        // Like sending a message: follow the answer and our reply down (and the notifications card under it).
+        stick.current = true;
+        scrollToBottom();
         if (await answerInvoice(invoiceId, answer)) onAnswered?.(answer);
       },
     }),
-    [onReply, onEdit, react, retry, discard, jumpTo, answerInvoice, onAnswered]
+    [onReply, onEdit, react, retry, discard, jumpTo, answerInvoice, onAnswered, scrollToBottom]
   );
 
   return (
@@ -156,7 +161,9 @@ export function MessageList({ chat, viewer, canModerate, nameFor, onReply, onEdi
         role="log"
         aria-label="Messages"
         data-lenis-prevent
-        className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain py-3"
+        // No browser scroll anchoring: its own small corrections fired scroll events that read as the reader
+        // leaving the bottom, so new messages stopped being followed. Loading older ones keeps the place itself (anchor).
+        className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain py-3 [overflow-anchor:none]"
       >
         {status === "loading" && (
           <div className="flex flex-col gap-3 px-3" aria-label="Loading messages">
@@ -187,6 +194,7 @@ export function MessageList({ chat, viewer, canModerate, nameFor, onReply, onEdi
                   </li>
                 )}
                 <MessageBubble message={m} viewer={viewer} canModerate={canModerate} nameFor={nameFor} highlight={flash === m.id} {...handlers} />
+                {after?.id === m.id && after.node}
               </Fragment>
             );
           })}

@@ -31,6 +31,19 @@ export function confirmationState(invoice: { askConfirm: boolean; answer: string
   return orderStatus === "pending_payment" ? "waiting" : null;
 }
 
+type ChatLine = { id: string; sender: string; body: string; invoice: { latest: boolean; answer: string | null; status: InvoiceStatus } | null };
+
+/**
+ * The store's thanks for confirming the newest invoice, while payment is still due: the customer's chat asks
+ * them to turn on notifications right after it, so the payment details reach them. Null otherwise.
+ */
+export function notifyAfter(messages: ChatLine[]): string | null {
+  const q = messages.findLastIndex((m) => m.sender === "staff" && m.invoice?.latest);
+  const invoice = messages[q]?.invoice;
+  if (invoice?.answer !== "confirmed" || invoice.status !== "payment_due") return null;
+  return messages.slice(q + 1).find((m) => m.sender === "staff" && m.body === INVOICE_COPY.yesReply)?.id ?? null;
+}
+
 export const INVOICE_BADGE: Record<InvoiceStatus, string> = {
   payment_due: "PAYMENT DUE",
   paid: "PAID",
