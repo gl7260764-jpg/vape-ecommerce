@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import createMDX from "@next/mdx";
 import productRedirects from "./prisma/data/catalog/product-redirects.json";
 
 const nextConfig: NextConfig = {
@@ -36,4 +37,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+// Blog posts are MDX (src/content/blog); remark-gfm adds tables. Plugins are named as strings for Turbopack.
+const withMDX = createMDX({ options: { remarkPlugins: ["remark-gfm"] } });
+
+export default withMDX(nextConfig);

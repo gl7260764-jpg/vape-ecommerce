@@ -92,9 +92,12 @@ const TITLE_LABEL: Partial<Record<ProductType, string>> = {
   nicotine_pouch: "Nicotine Pouches",
 };
 
-// Cannabinoid liquids were also imported as plain e-liquids: they name CBD/CBG in the title or come in
-// strengths no nicotine liquid has ("60ml (3000mg)"; nicotine tops out around 50mg).
-const underReview = (p: Pick<ProductSeoInput, "type" | "brand" | "name" | "nicotineMg">) =>
+/**
+ * THC and CBD products awaiting legal review: no search optimisation, and the blog never shows them.
+ * Cannabinoid liquids were also imported as plain e-liquids: they name CBD/CBG in the title or come in
+ * strengths no nicotine liquid has ("60ml (3000mg)"; nicotine tops out around 50mg).
+ */
+export const underReview = (p: Pick<ProductSeoInput, "type" | "name" | "nicotineMg"> & { brand: { slug: string } | null }) =>
   p.type === "cbd" ||
   UNDER_REVIEW_BRANDS.has(p.brand?.slug ?? "") ||
   /\b(cbd|cbg|cbn|thc|hhc|delta[- ]?[89])\b/i.test(p.name) ||

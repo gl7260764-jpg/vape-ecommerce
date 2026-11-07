@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { mediaUrl, storedSlug, type Category, type Product } from "@/lib/catalog";
 import { PAGE_SIZE, PRICE_BANDS, type Filters, type Sort } from "@/lib/filters";
 import { cleanDescription } from "@/lib/sanitize";
+import { underReview } from "@/lib/seo";
 import type { FlavourFamily, Prisma, ProductType } from "@/generated/prisma/client";
 
 // ---------------------------------------------------------------------------
@@ -408,6 +409,24 @@ export async function sitemapCatalog() {
     prisma.brand.findMany({ where: { products: { some: live }, categories: { none: { kind: "brand", isVisible: true } } }, select, orderBy: { slug: "asc" } }),
   ]);
   return { products, categories, brands };
+}
+
+/**
+ * A blog post's product picks, in the order the post lists them. Products that are gone or unpublished drop
+ * out, and so does anything awaiting legal review (THC and CBD): the blog never links to those.
+ */
+export async function blogProductCards(slugs: string[]): Promise<Product[]> {
+  "use cache";
+  cacheTag("catalog");
+  cacheLife("hours");
+  const rows = await prisma.product.findMany({
+    where: { ...live, slug: { in: slugs }, images: { some: { key: { not: null } } } },
+    select: { ...cardSelect, nicotineMg: true, brand: { select: { slug: true } } },
+  });
+  const cards = new Map(
+    rows.filter((r) => !underReview({ ...r, nicotineMg: r.nicotineMg === null ? null : Number(r.nicotineMg) })).map((r) => [r.slug, toCard(r)])
+  );
+  return slugs.flatMap((slug) => cards.get(slug) ?? []);
 }
 
 // ---------------------------------------------------------------------------

@@ -1,4 +1,6 @@
 import type { MetadataRoute } from "next";
+import { POSTS } from "@/content/blog/posts";
+import { BLOG_CATEGORIES, byNewest } from "@/lib/blog";
 import { sitemapCatalog } from "@/lib/catalog-queries";
 import { SITE_URL } from "@/lib/site";
 
@@ -21,6 +23,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { products, categories, brands } = await sitemapCatalog();
   // The home page and listings change whenever a product does.
   const latest = new Date(Math.max(...products.map((p) => p.updatedAt.getTime()), CONTACT_PAGE_CHANGED.getTime()));
+  // The blog changes when a post is published or updated.
+  const changed = (p: (typeof POSTS)[number]) => new Date(`${p.updated ?? p.published}T00:00:00+10:00`);
+  const posts = [...POSTS].sort(byNewest);
   return [
     page("", latest, "daily", 1),
     page("/shop", latest, "daily", 0.9),
@@ -32,5 +37,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...products.map((p) => page(`/product/${p.slug}`, p.updatedAt, "weekly", 0.8)),
     ...categories.map((c) => page(`/product-category/${c.slug}`, c.updatedAt, "weekly", 0.7)),
     ...brands.map((b) => page(`/brand/${b.slug}`, b.updatedAt, "weekly", 0.6)),
+    ...(posts.length ? [page("/blog", changed(posts[0]!), "daily", 0.7)] : []),
+    ...BLOG_CATEGORIES.flatMap((c) => {
+      const inCategory = posts.filter((p) => p.category === c.slug);
+      return inCategory.length ? [page(`/blog/category/${c.slug}`, changed(inCategory[0]!), "weekly", 0.5)] : [];
+    }),
+    ...posts.map((p) => page(`/blog/${p.slug}`, changed(p), "monthly", 0.6)),
   ];
 }

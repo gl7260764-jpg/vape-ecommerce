@@ -26,7 +26,10 @@ const columns = [
   {
     title: "Company",
     // Returns, Services and News come back once they have pages (the old store's links went nowhere).
-    links: [{ label: "About us", href: "/about-us" }],
+    links: [
+      { label: "About us", href: "/about-us" },
+      { label: "Blog", href: "/blog" },
+    ],
   },
 ];
 
