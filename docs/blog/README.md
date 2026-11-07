@@ -46,7 +46,8 @@ actually type into Google, in the pattern below. A post is two things in the cod
    - `title`: the question as people ask it (the h1); `seoTitle` if the title is over 60 characters.
    - `description`: 120–160 characters, mentions Australia, doesn't start by repeating the title.
    - `category`: `education`, `comparisons`, `laws-and-travel` or `cannabis`.
-   - `published`: today's date, `YYYY-MM-DD`. Add `updated` when you revise a post later.
+   - `published`: today's date in Australia (`TZ=Australia/Sydney date +%F`), `YYYY-MM-DD`. Add `updated` when you
+     revise a post later.
    - `keywords`: the phrase cluster from the backlog.
    - `faq`: 6 questions with short answers.
    - `readMinutes`: run the tests in step 7; they tell you the right number.
@@ -54,7 +55,9 @@ actually type into Google, in the pattern below. A post is two things in the cod
    `node scripts/blog/cover.mjs <slug> "Education · 2026 guide" "Short headline?" products/<key>.webp`
    For comparisons add a second photo and `--vs`. Cut-out product photos work best: find keys in the
    database (`ProductImage.key`, `hasBackground: false`).
-6. **Inline photos** (optional): free photos from unsplash.com only, not "Unsplash+". Save 1200x800 to
+6. **Inline photos** (optional): free photos from unsplash.com only, not "Unsplash+". Unsplash's pages block
+   scripts, so find the photo in a browser, then download it from its `images.unsplash.com/photo-…?w=1600` address,
+   which does work. Save 1200x800 to
    `public/blog/<slug>-<what>.jpg` and use
    `<Figure src="/blog/<slug>-<what>.jpg" alt="…" caption="…" credit="Name on Unsplash" creditUrl="https://unsplash.com/photos/…" />`.
 7. **Check**: `node --conditions=react-server --import tsx --test src/lib/blog.test.ts` (titles, descriptions,
