@@ -42,6 +42,9 @@ Local terms come in three ways, not by stuffing city names into posts:
 | 2026-11-07 | [IGET or Alibarbar: which is better?](/blog/iget-or-alibarbar-which-is-better) | Comparisons |
 | 2026-11-08 | [How to tell if your IGET bar is fake](/blog/how-to-tell-if-iget-is-fake) | Education |
 | 2026-11-08 | [Can I bring vapes back from Bali to Australia?](/blog/can-i-bring-vapes-back-from-bali-to-australia) | Laws & Travel |
+| 2026-11-16 | [Why is my vape flashing, hissing or tasting burnt?](/blog/why-is-my-vape-flashing) | Education |
+| 2026-11-16 | [Is CBD legal in Australia?](/blog/is-cbd-legal-in-australia) | Cannabis |
+| 2026-11-16 | [How many puffs is an Alibarbar?](/blog/how-many-puffs-is-alibarbar) | Education |
 
 ## Next up (two a day, in order)
 
@@ -49,28 +52,25 @@ Each day pairs a shop-linked post with a law, travel or cannabis one.
 
 | # | Working title | Main phrases | Category | Notes |
 | --- | --- | --- | --- | --- |
-| 1 | Why Is My Vape Flashing, Hissing or Tasting Burnt? | why is my vape flashing / hissing / burnt / not working | Education | Link the IGET Bar Plus post |
-| 2 | Is CBD Legal in Australia? The Rules by State | is cbd legal in australia, is cbd legal in qld, cbd oil australia legal | Cannabis | TGA scheduling of CBD; no products |
-| 3 | How Many Puffs Is an Alibarbar? Every Model Compared | how many puffs is alibarbar, alibarbar ingot, alibarbar upload | Education | Store data: Pandora 7,000, Ingot 9,000, Upload 25,000 |
-| 4 | Can You Take a Vape on a Plane in Australia? | vape on plane australia, vape in carry on australia | Laws & Travel | CASA and airline dangerous-goods rules for lithium batteries |
-| 5 | How Many Cigarettes Is One Vape? Puffs and Nicotine Explained | how many cigarettes is one vape, how much nicotine in iget bar | Education | No health claims; nicotine maths only where sourced |
-| 6 | Cannabis Laws in the ACT: What's Legal in Canberra | cannabis laws act, is cannabis legal in act australia | Cannabis | ACT legislation; no products |
-| 7 | IGET Bar Pro vs IGET One: Which Lasts Longer? | iget bar pro vs iget one, iget bar pro how long | Comparisons | Bar Pro is sold in 10-packs only |
-| 8 | Are Vapes Legal in Queensland? QLD Vape Laws | are vapes legal in qld, vape laws qld, can you buy vapes in qld | Laws & Travel | Queensland Health |
-| 9 | How to Charge an Alibarbar or IGET Vape | how to charge alibarbar vape, how to charge iget bar pro | Education | |
-| 10 | Medicinal Cannabis and Driving in NSW | medicinal cannabis driving nsw | Cannabis | Transport for NSW; no products |
-| 11 | Best IGET Flavours, Ranked by What Australians Buy | best iget flavours, best iget flavours ranked | Comparisons | Rank from the store's own order data |
-| 12 | Vape Laws in NSW | vape laws nsw, are vapes legal in nsw | Laws & Travel | NSW Health |
-| 13 | HQD Cuvie Slick vs IGET Bar Plus | hqd cuvie slick, hqd cuvie slick australia | Comparisons | |
-| 14 | How to Get Medicinal Cannabis in Australia | how to get medicinal cannabis australia, medicinal cannabis prescription | Cannabis | TGA SAS-B and Authorised Prescriber pages; no products |
-| 15 | Is Buying Vapes in Bulk Worth It? | vape bulk buy australia, vapes wholesale australia | Comparisons | Free regular shipping from $500 |
-| 16 | Vape Laws in Victoria | vape laws victoria, are vapes legal in victoria | Laws & Travel | |
-| 17 | Why Is My Vape Leaking or Bubbling? | why is my vape leaking, why is my vape bubbling | Education | |
-| 18 | Drug Driving Penalties in Queensland | drug driving penalties qld, drug driving qld | Cannabis | Queensland Police / legislation |
-| 19 | Geek Bar Pulse vs IGET One | geek bar pulse, iget one | Comparisons | Store has the Geek Pulse 9000 |
-| 20 | Vape Laws in WA | vape laws wa | Laws & Travel | |
-| 21 | IGET Moon vs IGET Legend | iget moon, iget legend puffs | Comparisons | |
-| 22 | Cannabis Laws in WA and SA | cannabis laws western australia, cannabis laws south australia | Cannabis | |
+| 1 | Can You Take a Vape on a Plane in Australia? | vape on plane australia, vape in carry on australia | Laws & Travel | CASA and airline dangerous-goods rules for lithium batteries |
+| 2 | How Many Cigarettes Is One Vape? Puffs and Nicotine Explained | how many cigarettes is one vape, how much nicotine in iget bar | Education | No health claims; nicotine maths only where sourced |
+| 3 | Cannabis Laws in the ACT: What's Legal in Canberra | cannabis laws act, is cannabis legal in act australia | Cannabis | ACT legislation; no products |
+| 4 | IGET Bar Pro vs IGET One: Which Lasts Longer? | iget bar pro vs iget one, iget bar pro how long | Comparisons | Bar Pro is sold in 10-packs only |
+| 5 | Are Vapes Legal in Queensland? QLD Vape Laws | are vapes legal in qld, vape laws qld, can you buy vapes in qld | Laws & Travel | Queensland Health |
+| 6 | How to Charge an Alibarbar or IGET Vape | how to charge alibarbar vape, how to charge iget bar pro | Education | |
+| 7 | Medicinal Cannabis and Driving in NSW | medicinal cannabis driving nsw | Cannabis | Transport for NSW; no products |
+| 8 | Best IGET Flavours, Ranked by What Australians Buy | best iget flavours, best iget flavours ranked | Comparisons | Rank from the store's own order data |
+| 9 | Vape Laws in NSW | vape laws nsw, are vapes legal in nsw | Laws & Travel | NSW Health |
+| 10 | HQD Cuvie Slick vs IGET Bar Plus | hqd cuvie slick, hqd cuvie slick australia | Comparisons | |
+| 11 | How to Get Medicinal Cannabis in Australia | how to get medicinal cannabis australia, medicinal cannabis prescription | Cannabis | TGA SAS-B and Authorised Prescriber pages; no products |
+| 12 | Is Buying Vapes in Bulk Worth It? | vape bulk buy australia, vapes wholesale australia | Comparisons | Free regular shipping from $500 |
+| 13 | Vape Laws in Victoria | vape laws victoria, are vapes legal in victoria | Laws & Travel | |
+| 14 | Why Is My Vape Leaking or Bubbling? | why is my vape leaking, why is my vape bubbling | Education | |
+| 15 | Drug Driving Penalties in Queensland | drug driving penalties qld, drug driving qld | Cannabis | Queensland Police / legislation |
+| 16 | Geek Bar Pulse vs IGET One | geek bar pulse, iget one | Comparisons | Store has the Geek Pulse 9000 |
+| 17 | Vape Laws in WA | vape laws wa | Laws & Travel | |
+| 18 | IGET Moon vs IGET Legend | iget moon, iget legend puffs | Comparisons | |
+| 19 | Cannabis Laws in WA and SA | cannabis laws western australia, cannabis laws south australia | Cannabis | |
 
 **Ask the owner first:** a post on nicotine pouches ("nicotine pouches australia legal"). The honest answer is
 that they're prescription-only in Australia, and the store sells IGET Shion pouches.

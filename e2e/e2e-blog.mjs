@@ -83,7 +83,10 @@ for (const path of posts) {
     const targets = await Promise.all(toc.map((h) => p.locator(h).count()));
     check(`${path}: "In this article" lists the sections and each one jumps`, toc.length >= 4 && targets.every((n) => n === 1), toc.join(" "));
     const cards = await p.locator("[data-article-body] section").filter({ has: p.getByRole("button", { name: /Add .* to cart/ }) }).locator("article").count();
-    check(`${path}: product picks with Add to cart`, cards >= 4, cards);
+    // Cannabis posts are information only: no products at all, by rule.
+    const cannabis = (await p.locator('header a[href="/blog/category/cannabis"]').count()) > 0;
+    if (cannabis) check(`${path}: a cannabis post shows no products`, cards === 0 && (await p.getByRole("button", { name: /Add .* to cart/ }).count()) === 0, cards);
+    else check(`${path}: product picks with Add to cart`, cards >= 4, cards);
     check(`${path}: an FAQ with at least 4 answers`, (await p.locator("#faqs + div h3").count()) >= 4);
     const images = await p.locator("main img").evaluateAll((imgs) => imgs.filter((i) => !i.complete || i.naturalWidth === 0).map((i) => i.getAttribute("src")));
     await p.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
@@ -96,7 +99,8 @@ for (const path of posts) {
       const res = await fetch(base + href);
       if (res.status >= 400) dead.push(`${href} ${res.status}`);
     }
-    check(`${path}: every link in the post works (${links.length})`, links.length >= 5 && dead.length === 0, dead.join(" | ") || links.join(" "));
+    // Shop posts link their ranges and other guides; a cannabis post has no ranges to link, so one is enough.
+    check(`${path}: every link in the post works (${links.length})`, links.length >= (cannabis ? 1 : 5) && dead.length === 0, dead.join(" | ") || links.join(" "));
     check(`${path}: keep reading shows other posts`, (await p.locator('section[aria-labelledby="keep-reading"] article').count()) >= 1);
   });
 }
