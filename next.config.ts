@@ -8,8 +8,14 @@ const nextConfig: NextConfig = {
   // into one and messy slugs cleaned up: scripts/catalog/merge-duplicates.mts and clean-slugs.mts).
   async redirects() {
     return [
-      // One address for the whole site: www goes to the bare domain.
-      { source: "/:path*", has: [{ type: "host", value: "www.vapesupplieraustralia.com" }], destination: "https://vapesupplieraustralia.com/:path*", permanent: true },
+      // One address for the whole site, vapesupplieraustralia.com.au: www and the old .com domain go to it,
+      // page for page. (Vercel's domain settings redirect these too; this covers them if that's ever removed.)
+      ...["www.vapesupplieraustralia.com.au", "vapesupplieraustralia.com", "www.vapesupplieraustralia.com"].map((host) => ({
+        source: "/:path*",
+        has: [{ type: "host" as const, value: host }],
+        destination: "https://vapesupplieraustralia.com.au/:path*",
+        permanent: true,
+      })),
       { source: "/budget-friendly", destination: "/shop?price=under-25", permanent: true },
       { source: "/product-category/uncategorized", destination: "/shop", permanent: true },
       ...Object.entries(productRedirects).map(([from, to]) => ({ source: `/product/${from}`, destination: `/product/${to}`, permanent: true })),

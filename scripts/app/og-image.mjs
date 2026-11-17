@@ -25,7 +25,7 @@ const html = `<!doctype html><html><head>
   <div class="cloud"></div><div class="shade"></div>
   <div class="card">
     <div class="logo"><div class="b">B</div><div class="name"><b>Best Vape</b><span>Shop Australia</span></div></div>
-    <div class="url">vapesupplieraustralia.com</div>
+    <div class="url">vapesupplieraustralia.com.au</div>
     <h1>Big clouds.<em>Better prices.</em></h1>
     <p>Genuine IGET, Alibarbar and HQD disposables. Tracked delivery Australia-wide.</p>
   </div>

@@ -9,7 +9,7 @@ const OUT = "e2e/out"; // screenshots (git-ignored)
 mkdirSync(OUT, { recursive: true });
 
 const [base = "http://localhost:3100"] = process.argv.slice(2);
-const SITE = "https://vapesupplieraustralia.com";
+const SITE = "https://vapesupplieraustralia.com.au";
 const report = [];
 const check = (name, ok, detail = "") => report.push({ check: name, ok: Boolean(ok), detail: String(detail).slice(0, 240) });
 const errors = [];
