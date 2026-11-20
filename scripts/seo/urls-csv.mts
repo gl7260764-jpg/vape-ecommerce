@@ -1,4 +1,4 @@
-// seo/urls.csv: every page in the live sitemap.xml, in the order worth asking Google to index them one by one
+// seo/urls.csv (and seo/urls.txt, the bare URLs): every page in the live sitemap.xml, in the order worth asking Google to index them one by one
 // (Search Console > URL Inspection > Request indexing allows about 10 a day). Hubs first, because Google
 // finds the products through them: home and main pages, categories, blog, brands, then products.
 //
@@ -125,6 +125,9 @@ const csv = [
 ].join("\n");
 mkdirSync(path.dirname(FILE), { recursive: true });
 writeFileSync(FILE, `${csv}\n`);
+// The same list as bare URLs, one per line, for copying into Search Console: a row copied from the CSV
+// carries its other columns ("...30ml,product,Berry") and Google looks up that address instead (a 404).
+writeFileSync(path.join(path.dirname(FILE), "urls.txt"), `${rows.map((r) => r.url).join("\n")}\n`);
 
 const added = rows.filter((r) => kept.size && !kept.has(r.url)).length;
 const gone = [...kept.keys()].filter((u) => !rows.some((r) => r.url === u)).length;

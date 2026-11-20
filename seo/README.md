@@ -17,8 +17,12 @@ categories, blog posts, brands, then products. THC/CBD pages under legal review 
 
 ## Submitting a page
 
+Copy URLs from [`urls.txt`](urls.txt) (the same list, one bare URL per line, same order). A line copied from
+the CSV brings its other columns with it (`...grape-30ml,product,Berry`), and Search Console then looks up that
+address and reports "Not found (404)".
+
 1. Open Google Search Console, property **vapesupplieraustralia.com.au**.
-2. Paste the `url` into the search bar at the top ("Inspect any URL") and press Enter.
+2. Paste the URL into the search bar at the top ("Inspect any URL") and press Enter.
 3. Click **Request indexing** and wait for "Indexing requested".
 4. Mark the row `yes` with today's date.
 

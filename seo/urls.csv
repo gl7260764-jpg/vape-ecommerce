@@ -1,10 +1,10 @@
 order,url,page_type,name,last_updated,submitted,submitted_date,notes
-1,https://vapesupplieraustralia.com.au,home,Home,2026-11-02,,,
-2,https://vapesupplieraustralia.com.au/shop,main page,Shop all,2026-11-02,,,
-3,https://vapesupplieraustralia.com.au/blog,main page,Blog,2026-11-15,,,
+1,https://vapesupplieraustralia.com.au,home,Home,2026-11-02,yes,2026-11-19,requested by Claude
+2,https://vapesupplieraustralia.com.au/shop,main page,Shop all,2026-11-02,yes,2026-11-19,requested by Claude
+3,https://vapesupplieraustralia.com.au/blog,main page,Blog,2026-11-15,yes,2026-11-19,requested by Claude
 4,https://vapesupplieraustralia.com.au/brands,main page,All brands,2026-11-02,,,
 5,https://vapesupplieraustralia.com.au/categories,main page,All categories,2026-11-02,,,
-6,https://vapesupplieraustralia.com.au/product-category/disposable-vapes,category,Disposable Vapes,2026-10-22,,,
+6,https://vapesupplieraustralia.com.au/product-category/disposable-vapes,category,Disposable Vapes,2026-10-22,yes,2026-11-19,requested by Claude
 7,https://vapesupplieraustralia.com.au/product-category/bulk-buy,category,Bulk Buy,2026-10-22,,,
 8,https://vapesupplieraustralia.com.au/product-category/iget-vapes-bulk-buy,category,IGET Bulk Buy,2026-10-22,,,
 9,https://vapesupplieraustralia.com.au/product-category/e-liquids,category,E-Liquids,2026-10-22,,,
@@ -13,8 +13,8 @@ order,url,page_type,name,last_updated,submitted,submitted_date,notes
 12,https://vapesupplieraustralia.com.au/product-category/geek-bar,category,Geek Bar,2026-10-22,,,
 13,https://vapesupplieraustralia.com.au/product-category/glass-bongs,category,Glass Bongs,2026-10-22,,,
 14,https://vapesupplieraustralia.com.au/product-category/iget-bar-plus,category,IGET Bar Plus,2026-10-22,,,
-15,https://vapesupplieraustralia.com.au/product-category/iget-bar-australia,category,IGET Bar,2026-10-22,,,
-16,https://vapesupplieraustralia.com.au/product-category/alibarbar,category,Alibarbar,2026-10-22,,,
+15,https://vapesupplieraustralia.com.au/product-category/iget-bar-australia,category,IGET Bar,2026-10-22,yes,2026-11-19,requested by Claude
+16,https://vapesupplieraustralia.com.au/product-category/alibarbar,category,Alibarbar,2026-10-22,yes,2026-11-19,requested by Claude
 17,https://vapesupplieraustralia.com.au/product-category/airmez-xbeats-40000-puffs,category,Airmez Xbeats,2026-10-22,,,
 18,https://vapesupplieraustralia.com.au/product-category/iget-moon,category,IGET Moon,2026-10-22,,,
 19,https://vapesupplieraustralia.com.au/product-category/hqd-cuvie-slick-6000,category,HQD Cuvie Slick 6000,2026-10-22,,,
