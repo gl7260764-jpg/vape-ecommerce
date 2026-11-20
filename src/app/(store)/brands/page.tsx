@@ -6,7 +6,7 @@ import { getBrands } from "@/lib/catalog-queries";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "All Vape Brands",
+  title: { absolute: "Vape Brands Australia: IGET, Alibarbar, HQD & More" },
   description: "IGET, HQD, Alibarbar, Geek Bar and every other vape brand we stock in Australia, in one place, with tracked delivery to every state and territory.",
   path: "/brands",
 });

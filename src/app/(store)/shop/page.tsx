@@ -5,8 +5,8 @@ import { Listing, ListingFallback } from "@/components/store/listing";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Shop All Vapes Online",
-  description: "Every disposable vape, e-liquid, pod kit, nicotine pouch and accessory we stock, with filters for brand, flavour and price. Tracked delivery Australia-wide.",
+  title: { absolute: "Vapes Online Australia: Shop All Disposables & E-Liquids" },
+  description: "Shop every vape we stock: disposables, e-liquid and vape juice, pod kits and nicotine pouches from IGET, Alibarbar, HQD and Geek Bar. Tracked delivery Australia-wide.",
   path: "/shop",
 });
 

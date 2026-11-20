@@ -14,9 +14,10 @@ import { getPublicBusinessDetails } from "@/lib/store-profile";
 
 // The capital cities are where most Australians searching for a vape shop are; delivery reaches them all.
 export const metadata = pageMetadata({
-  title: { absolute: "Best Vape Shop Australia | Buy Disposable Vapes Online" },
+  // "buy vapes online australia" leads Google Australia's autocomplete for buying searches (20 Nov 2026).
+  title: { absolute: "Buy Vapes Online Australia | Best Vape Shop Australia" },
   description:
-    "Genuine IGET, Alibarbar and HQD disposables at bulk-buy prices, with tracked delivery to Sydney, Melbourne, Brisbane, Perth, Adelaide and all of Australia. Adults 18+.",
+    "Buy vapes online: genuine IGET, Alibarbar and HQD disposables at bulk-buy prices, delivered to Sydney, Melbourne, Brisbane, Perth, Adelaide and Australia-wide.",
   path: "/",
 });
 
