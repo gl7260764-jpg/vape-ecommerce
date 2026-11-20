@@ -39,7 +39,11 @@ const holders = new Map<string, number>();
  * listener goes. Returns the cleanup.
  */
 export function listen(pusher: Pusher, name: string, handlers: Record<string, (data: unknown) => void>): { channel: Channel; stop: () => void } {
-  const channel = pusher.channel(name) ?? pusher.subscribe(name);
+  // Always subscribe(), never reuse channel(): when one listener leaves and another joins in the same
+  // moment (the launcher handing the conversation to the open chat), the channel can be left with its
+  // subscription cancelled while still pending, and only subscribe() reinstates it. On a live channel
+  // it is a no-op that returns the same channel.
+  const channel = pusher.subscribe(name);
   holders.set(name, (holders.get(name) ?? 0) + 1);
   for (const [event, fn] of Object.entries(handlers)) channel.bind(event, fn);
   return {
