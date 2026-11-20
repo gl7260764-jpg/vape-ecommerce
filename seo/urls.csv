@@ -2,11 +2,11 @@ order,url,page_type,name,last_updated,submitted,submitted_date,notes
 1,https://vapesupplieraustralia.com.au,home,Home,2026-11-02,yes,2026-11-19,requested by Claude
 2,https://vapesupplieraustralia.com.au/shop,main page,Shop all,2026-11-02,yes,2026-11-19,requested by Claude
 3,https://vapesupplieraustralia.com.au/blog,main page,Blog,2026-11-15,yes,2026-11-19,requested by Claude
-4,https://vapesupplieraustralia.com.au/brands,main page,All brands,2026-11-02,,,
-5,https://vapesupplieraustralia.com.au/categories,main page,All categories,2026-11-02,,,
+4,https://vapesupplieraustralia.com.au/brands,main page,All brands,2026-11-02,yes,2026-11-20,requested by Claude
+5,https://vapesupplieraustralia.com.au/categories,main page,All categories,2026-11-02,yes,2026-11-20,requested by Claude
 6,https://vapesupplieraustralia.com.au/product-category/disposable-vapes,category,Disposable Vapes,2026-10-22,yes,2026-11-19,requested by Claude
-7,https://vapesupplieraustralia.com.au/product-category/bulk-buy,category,Bulk Buy,2026-10-22,,,
-8,https://vapesupplieraustralia.com.au/product-category/iget-vapes-bulk-buy,category,IGET Bulk Buy,2026-10-22,,,
+7,https://vapesupplieraustralia.com.au/product-category/bulk-buy,category,Bulk Buy,2026-10-22,yes,2026-11-20,requested by Claude
+8,https://vapesupplieraustralia.com.au/product-category/iget-vapes-bulk-buy,category,IGET Bulk Buy,2026-10-22,yes,2026-11-20,requested by Claude
 9,https://vapesupplieraustralia.com.au/product-category/e-liquids,category,E-Liquids,2026-10-22,,,
 10,https://vapesupplieraustralia.com.au/product-category/vape-accessories,category,Vape Accessories,2026-10-22,,,
 11,https://vapesupplieraustralia.com.au/product-category/eliquide-juice,category,E-Juice,2026-10-22,,,
