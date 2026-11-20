@@ -1,0 +1,26 @@
+name: Deploy to Vercel
+
+# Every push to main, including a merged pull request, goes live on Vercel (account 1, team apcode1).
+# Deploys with the Vercel CLI and a token instead of Vercel's own GitHub link, which on the free plan
+# blocks commits whose author isn't the Vercel account's owner. The build runs on Vercel with the
+# project's env vars; this job only uploads the code and waits for the result.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to production
+        run: npx --yes vercel@48.9.0 deploy --prod --yes --token "${{ secrets.VERCEL_TOKEN }}"
