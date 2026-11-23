@@ -3,7 +3,7 @@
 // robots.txt and sitemap.xml for search engines (Google Search Console): every public page listed with the
 // store's domain, nothing private, and the pages they list actually load.
 const [base = "http://localhost:3100"] = process.argv.slice(2);
-const SITE = "https://vapesupplieraustralia.com.au";
+const SITE = "https://vapesupplieraustralia.com";
 const report = [];
 const check = (name, ok, detail = "") => report.push({ check: name, ok: Boolean(ok), detail: String(detail).slice(0, 300) });
 const PRIVATE = ["/admin", "/api", "/account", "/checkout", "/order", "/orders"];

@@ -2,18 +2,23 @@ import type { NextConfig } from "next";
 import createMDX from "@next/mdx";
 import productRedirects from "./prisma/data/catalog/product-redirects.json";
 
+// The one address the site answers on; the store's other addresses redirect to it page for page.
+// Keep in step with SITE_URL in src/lib/site.ts.
+const MAIN_HOST = "vapesupplieraustralia.com";
+const STORE_HOSTS = ["vapesupplieraustralia.com", "www.vapesupplieraustralia.com", "vapesupplieraustralia.com.au", "www.vapesupplieraustralia.com.au"];
+
 const nextConfig: NextConfig = {
   cacheComponents: true,
   // Old store URLs that map onto the new shop, and old product addresses -> current ones (duplicates merged
   // into one and messy slugs cleaned up: scripts/catalog/merge-duplicates.mts and clean-slugs.mts).
   async redirects() {
     return [
-      // One address for the whole site, vapesupplieraustralia.com.au: www and the old .com domain go to it,
-      // page for page. (Vercel's domain settings redirect these too; this covers them if that's ever removed.)
-      ...["www.vapesupplieraustralia.com.au", "vapesupplieraustralia.com", "www.vapesupplieraustralia.com"].map((host) => ({
+      // One address for the whole site (MAIN_HOST). (Vercel's domain settings redirect the others too; this
+      // covers them if that's ever removed.)
+      ...STORE_HOSTS.filter((host) => host !== MAIN_HOST).map((host) => ({
         source: "/:path*",
         has: [{ type: "host" as const, value: host }],
-        destination: "https://vapesupplieraustralia.com.au/:path*",
+        destination: `https://${MAIN_HOST}/:path*`,
         permanent: true,
       })),
       { source: "/budget-friendly", destination: "/shop?price=under-25", permanent: true },

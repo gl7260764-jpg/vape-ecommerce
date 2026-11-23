@@ -14,7 +14,7 @@ const vs = args.includes("--vs");
 const [slug, kicker, headline, ...photos] = args.filter((a) => a !== "--vs");
 if (!slug || !kicker || !headline || !photos.length) throw new Error('usage: node scripts/blog/cover.mjs <slug> "<kicker>" "<headline>" <photo> [<photo>] [--vs]');
 
-const SITE = "https://vapesupplieraustralia.com.au";
+const SITE = "https://vapesupplieraustralia.com";
 async function dataUrl(photo) {
   // Trimmed, so a photo's empty border doesn't shrink the product.
   const png = async (buffer) => `data:image/png;base64,${(await sharp(buffer).trim().png().toBuffer()).toString("base64")}`;

@@ -4,7 +4,7 @@
 // listed in the sitemap that's checked has its own, aimed at Australian searches, except the THC and CBD
 // products awaiting legal review, which keep their plain title and summary.
 const [base = "http://localhost:3100"] = process.argv.slice(2);
-const SITE = "https://vapesupplieraustralia.com.au";
+const SITE = "https://vapesupplieraustralia.com";
 const report = [];
 const check = (name, ok, detail = "") => report.push({ check: name, ok: Boolean(ok), detail: String(detail).slice(0, 300) });
 const decode = (s) => s.replaceAll("&amp;", "&").replaceAll("&#x27;", "'").replaceAll("&quot;", '"').replaceAll("&lt;", "<").replaceAll("&gt;", ">");

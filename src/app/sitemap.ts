@@ -4,7 +4,7 @@ import { BLOG_CATEGORIES, byNewest } from "@/lib/blog";
 import { sitemapCatalog } from "@/lib/catalog-queries";
 import { SITE_URL } from "@/lib/site";
 
-// sitemap.xml for search engines: submit https://vapesupplieraustralia.com.au/sitemap.xml in Google Search
+// sitemap.xml for search engines: submit https://vapesupplieraustralia.com/sitemap.xml in Google Search
 // Console. Lists the store's public pages; account, checkout, order and admin pages stay out (see robots.ts).
 
 const CONTACT_PAGE_CHANGED = new Date("2026-10-25");
